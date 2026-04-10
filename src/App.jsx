@@ -6,48 +6,56 @@ import {
 } from "recharts";
 
 const weeklyData = [
-  { week: "Jan 05", engagements: 49,  impressions: 3648  },
-  { week: "Jan 12", engagements: 359, impressions: 21385 },
-  { week: "Jan 19", engagements: 104, impressions: 9534  },
-  { week: "Jan 26", engagements: 154, impressions: 15452 },
-  { week: "Feb 02", engagements: 96,  impressions: 9714  },
-  { week: "Feb 09", engagements: 229, impressions: 20769 },
-  { week: "Feb 16", engagements: 85,  impressions: 12127 },
-  { week: "Feb 23", engagements: 138, impressions: 9501  },
-  { week: "Mar 02", engagements: 198, impressions: 12040 },
-  { week: "Mar 09", engagements: 130, impressions: 12579 },
-  { week: "Mar 16", engagements: 190, impressions: 9776  },
-  { week: "Mar 23", engagements: 44,  impressions: 8379  },
-  { week: "Mar 30", engagements: 20,  impressions: 3546  },
+  { week: "Jan 05", engagements: 49,  impressions: 3648,  posts: 3  },
+  { week: "Jan 12", engagements: 359, impressions: 21385, posts: 8  },
+  { week: "Jan 19", engagements: 104, impressions: 9534,  posts: 6  },
+  { week: "Jan 26", engagements: 154, impressions: 15452, posts: 7  },
+  { week: "Feb 02", engagements: 96,  impressions: 9714,  posts: 8  },
+  { week: "Feb 09", engagements: 229, impressions: 20769, posts: 10 },
+  { week: "Feb 16", engagements: 85,  impressions: 12127, posts: 9  },
+  { week: "Feb 23", engagements: 138, impressions: 9501,  posts: 9  },
+  { week: "Mar 02", engagements: 198, impressions: 12040, posts: 22 },
+  { week: "Mar 09", engagements: 130, impressions: 12579, posts: 25 },
+  { week: "Mar 16", engagements: 190, impressions: 9776,  posts: 26 },
+  { week: "Mar 23", engagements: 44,  impressions: 8379,  posts: 24 },
+  { week: "Mar 30", engagements: 86,  impressions: 9787,  posts: 7  },
+  { week: "Apr 06", engagements: 74,  impressions: 6632,  posts: 16 },
 ];
 
 const monthlyData = [
-  { month: "Jan", engagements: 662, goal: 750 },
+  { month: "Jan", engagements: 611, goal: 750 },
   { month: "Feb", engagements: 543, goal: 750 },
   { month: "Mar", engagements: 591, goal: 750 },
+  { month: "Apr*", engagements: 145, goal: 750 },
 ];
 
 const topPosts = [
-  { date: "Jan 12", engagements: 253, impressions: 12682 },
-  { date: "Feb 09", engagements: 98,  impressions: 9727  },
-  { date: "Mar 20", engagements: 94,  impressions: 4105  },
-  { date: "Jan 15", engagements: 69,  impressions: 3949  },
-  { date: "Feb 14", engagements: 65,  impressions: 5021  },
+  { date: "Jan 12", engagements: 253, impressions: 12689, preview: "Son Taylor sworn into the bar at NJ Supreme Court — a proud father moment" },
+  { date: "Mar 20", engagements: 99,  impressions: 4359,  preview: "Farewell to Benjamin Hassett after 4 years at Elite Consulting Partners" },
+  { date: "Feb 09", engagements: 98,  impressions: 9729,  preview: "MassMutual's Private Wealth Division — what advisors should pay attention to" },
+  { date: "Jan 15", engagements: 69,  impressions: 3953,  preview: "Cetera/Osaic rumors: separating fact from speculation" },
+  { date: "Feb 14", engagements: 65,  impressions: 5023,  preview: "Valentine's Day: building Elite and building a life with Kim" },
 ];
 
-const formatMix = ["Video", "Photo", "Status", "Link"];
+const formatMix = [
+  { name: "Photo",  avgEng: 25.7, avgImpr: 1645, color: "#3fb950" },
+  { name: "Link",   avgEng: 8.2,  avgImpr: 1400, color: "#c9a84c" },
+  { name: "Status", avgEng: 6.1,  avgImpr: 933,  color: "#58a6ff" },
+  { name: "Video",  avgEng: 4.8,  avgImpr: 429,  color: "#f85149" },
+];
 
-const GOLD    = "#c9a84c";
-const GOLD_DIM= "rgba(201,168,76,0.15)";
-const GREEN   = "#3fb950";
-const GREEN_DIM="rgba(63,185,80,0.12)";
-const RED     = "#f85149";
-const RED_DIM = "rgba(248,81,73,0.12)";
-const BLUE    = "#58a6ff";
-const PURPLE  = "#a855f7";
-const MUTED   = "#8892a4";
-const BORDER  = "rgba(255,255,255,0.07)";
-const SURFACE = "#111827";
+const GOLD     = "#c9a84c";
+const GOLD_DIM = "rgba(201,168,76,0.15)";
+const GREEN    = "#3fb950";
+const GREEN_DIM= "rgba(63,185,80,0.12)";
+const RED      = "#f85149";
+const RED_DIM  = "rgba(248,81,73,0.12)";
+const BLUE     = "#58a6ff";
+const BLUE_DIM = "rgba(88,166,255,0.1)";
+const PURPLE   = "#a855f7";
+const MUTED    = "#8892a4";
+const BORDER   = "rgba(255,255,255,0.07)";
+const SURFACE  = "#111827";
 
 function KpiCard({ source, label, value, delta, deltaLabel, accent, large, sub }) {
   const isUp = delta > 0;
@@ -74,7 +82,9 @@ function CustomTooltip({ active, payload, label }) {
     <div style={{ background: "#1a2235", border: `1px solid ${BORDER}`, borderRadius: 8, padding: "10px 14px" }}>
       <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>{label}</div>
       {payload.map((p, i) => (
-        <div key={i} style={{ fontSize: 13, color: p.color, marginBottom: 2 }}>{p.name}: <strong>{p.value.toLocaleString()}</strong></div>
+        <div key={i} style={{ fontSize: 13, color: p.color, marginBottom: 2 }}>
+          {p.name}: <strong>{p.value?.toLocaleString()}</strong>
+        </div>
       ))}
     </div>
   );
@@ -93,7 +103,10 @@ export default function App() {
   const engMoM  = Math.round(((591 - 543) / 543) * 100);
   const imprMoM = Math.round(((46576 - 52925) / 52925) * 100);
   const follMoM = Math.round(((163 - 138) / 138) * 100);
-  const podMoM  = Math.round(((330 - 375) / 375) * 100);
+  const aprEng  = 145;
+  const aprGoal = 750;
+  const aprPct  = Math.round((aprEng / aprGoal) * 100);
+  const maxFmtImpr = Math.max(...formatMix.map(f => f.avgImpr));
 
   return (
     <div style={{ background: "#0a0f1e", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", color: "#f0f6fc" }}>
@@ -112,11 +125,11 @@ export default function App() {
           <div style={{ width: 36, height: 36, background: GOLD, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#0a0f1e" }}>E</div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Elite Partners Group — Marketing Performance</div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn + Podcast · Q1 2026</div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Apr 10, 2026</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Apr 2026</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Apr 10, 2026</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: MUTED }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
             Live Dashboard
@@ -136,7 +149,12 @@ export default function App() {
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-            {[{ label: "April Goal", val: "750" }, { label: "May Goal", val: "750" }, { label: "June Goal", val: "750" }].map((g) => (
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>April Progress</div>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: aprPct >= 50 ? GREEN : RED }}>{aprEng} / 750</div>
+              <div style={{ fontSize: 10, color: MUTED }}>{aprPct}% of goal · Apr 10</div>
+            </div>
+            {[{ label: "May Goal", val: "750" }, { label: "June Goal", val: "750" }].map((g) => (
               <div key={g.label} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>{g.label}</div>
                 <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: GOLD }}>{g.val}</div>
@@ -150,15 +168,16 @@ export default function App() {
           <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (Mar)" value="591" delta={engMoM} deltaLabel="vs Feb (543)" accent={GOLD} large />
           <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (Mar)" value="46.6K" delta={imprMoM} deltaLabel="vs Feb (52.9K)" accent={BLUE} />
           <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (Mar)" value="163" delta={follMoM} deltaLabel="vs Feb (138)" accent={GREEN} />
-          <KpiCard source="Simplecast · Advisor Talk" label="Podcast Downloads (7-Day)" value="330" delta={podMoM} deltaLabel="vs prior 7 days (375)" sub="All-time: 179,349" accent={BLUE} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,764" accent={PURPLE} sub="As of April 10, 2026" />
         </div>
 
         {/* ROW 2: CHARTS */}
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 14, marginBottom: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 14, marginBottom: 14 }}>
+
           <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px" }}>
-            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>Weekly Engagements — Frank LaRosa LinkedIn</div>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 16 }}>Q1 2026 · Green reference line = 187 weekly goal</div>
-            <ResponsiveContainer width="100%" height={220}>
+            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>Weekly Engagements & Impressions — Frank LaRosa LinkedIn</div>
+            <div style={{ fontSize: 11, color: MUTED, marginBottom: 12 }}>Jan–Apr 2026 · Green dashed = 187 weekly engagement goal</div>
+            <ResponsiveContainer width="100%" height={190}>
               <AreaChart data={weeklyData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="engGrad" x1="0" y1="0" x2="0" y2="1">
@@ -176,17 +195,37 @@ export default function App() {
                 <YAxis yAxisId="right" orientation="right" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `${(v/1000).toFixed(0)}k`} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11, color: MUTED }} />
-                <ReferenceLine yAxisId="left" y={187} stroke={GREEN} strokeDasharray="4 4" label={{ value: "Weekly Goal", fill: GREEN, fontSize: 10, position: "right" }} />
+                <ReferenceLine yAxisId="left" y={187} stroke={GREEN} strokeDasharray="4 4" label={{ value: "Weekly Goal", fill: GREEN, fontSize: 10, position: "insideTopRight" }} />
                 <Area yAxisId="left" type="monotone" dataKey="engagements" name="Engagements" stroke={GOLD} strokeWidth={2.5} fill="url(#engGrad)" dot={false} activeDot={{ r: 5, fill: GOLD }} />
                 <Area yAxisId="right" type="monotone" dataKey="impressions" name="Impressions" stroke={BLUE} strokeWidth={1.5} fill="url(#imprGrad)" strokeDasharray="5 4" dot={false} />
               </AreaChart>
             </ResponsiveContainer>
+
+            <div style={{ borderTop: `1px solid ${BORDER}`, marginTop: 16, paddingTop: 14 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: MUTED, marginBottom: 8 }}>
+                Posts Published Per Week
+                <span style={{ fontWeight: 400, fontSize: 10, marginLeft: 8 }}>quality vs. quantity context</span>
+              </div>
+              <ResponsiveContainer width="100%" height={95}>
+                <BarChart data={weeklyData} margin={{ top: 0, right: 10, left: -10, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
+                  <XAxis dataKey="week" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <ReferenceLine y={5} stroke={GREEN} strokeDasharray="4 4" label={{ value: "Target cadence", fill: GREEN, fontSize: 9, position: "insideTopRight" }} />
+                  <Bar dataKey="posts" name="Posts" fill={GOLD} radius={[3, 3, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+              <div style={{ fontSize: 10, color: MUTED, marginTop: 4, fontStyle: "italic" }}>
+                * Counts estimated from monthly totals (Feb 46, Mar 100). Apr 6 week = 16 confirmed via LinkedIn weekly tracker.
+              </div>
+            </div>
           </div>
 
           <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px" }}>
             <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>Monthly Engagements vs Goal</div>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 16 }}>Q1 actuals · Q2 monthly target: 750</div>
-            <ResponsiveContainer width="100%" height={220}>
+            <div style={{ fontSize: 11, color: MUTED, marginBottom: 16 }}>Q1 actuals + Apr partial · Q2 target: 750/mo</div>
+            <ResponsiveContainer width="100%" height={200}>
               <BarChart data={monthlyData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
                 <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -196,60 +235,70 @@ export default function App() {
                 <Bar dataKey="engagements" name="Engagements" fill={GOLD} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
+            <div style={{ marginTop: 14, padding: "12px 14px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                <span style={{ fontSize: 11, color: GOLD }}>April Progress (10 days)</span>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{aprEng} / 750</span>
+              </div>
+              <div style={{ height: 6, background: "rgba(255,255,255,0.07)", borderRadius: 3, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${Math.min(aprPct, 100)}%`, background: aprPct >= 50 ? GREEN : GOLD, borderRadius: 3 }} />
+              </div>
+              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{aprPct}% of monthly goal · 20 days remaining</div>
+            </div>
           </div>
         </div>
 
-        {/* ROW 3: BOTTOM CARDS */}
+        {/* ROW 3: BOTTOM */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
 
-          {/* Q1 Summary */}
           <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px" }}>
             <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 16 }}>Q1 2026 Summary</div>
             {[
-              { label: "Total Engagements", val: "1,801",   color: GOLD   },
-              { label: "Total Impressions",  val: "149,474", color: BLUE   },
-              { label: "New Followers",       val: "489",    color: GREEN  },
-              { label: "Total Followers",     val: "12,745", color: PURPLE },
-              { label: "Avg Eng / Month",     val: "600",    color: MUTED  },
+              { label: "Total Engagements",  val: "1,745",   color: GOLD   },
+              { label: "Total Impressions",   val: "149,474", color: BLUE   },
+              { label: "New Followers",        val: "459",    color: GREEN  },
+              { label: "Total Followers",      val: "12,764", color: PURPLE },
+              { label: "Avg Eng / Month",      val: "582",    color: MUTED  },
+              { label: "Posts Published",      val: "~181",   color: MUTED  },
             ].map((item) => (
-              <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${BORDER}` }}>
+              <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: `1px solid ${BORDER}` }}>
                 <span style={{ fontSize: 13, color: MUTED }}>{item.label}</span>
                 <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 14, fontWeight: 600, color: item.color }}>{item.val}</span>
               </div>
             ))}
           </div>
 
-          {/* Top Posts */}
           <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px" }}>
             <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>Top Posts by Engagements</div>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 16 }}>Q1 2026 · Top 5</div>
+            <div style={{ fontSize: 11, color: MUTED, marginBottom: 14 }}>Jan–Apr 2026 · Top 5 · LinkedIn export</div>
             {topPosts.map((p, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 10px", borderRadius: 8, background: i === 0 ? GOLD_DIM : "transparent", marginBottom: 6 }}>
-                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: i === 0 ? GOLD : MUTED, width: 16 }}>#{i + 1}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, color: "#f0f6fc" }}>{p.date}</div>
-                  <div style={{ fontSize: 11, color: MUTED }}>{p.impressions.toLocaleString()} impressions</div>
+              <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 10px", borderRadius: 8, background: i === 0 ? GOLD_DIM : "transparent", marginBottom: 6, border: i === 0 ? `1px solid rgba(201,168,76,0.2)` : "1px solid transparent" }}>
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: i === 0 ? GOLD : MUTED, width: 16, flexShrink: 0, paddingTop: 1 }}>#{i + 1}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, color: "#f0f6fc", lineHeight: 1.4, marginBottom: 3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{p.preview}</div>
+                  <div style={{ fontSize: 10, color: MUTED }}>{p.date} · {p.impressions.toLocaleString()} impr</div>
                 </div>
-                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, fontWeight: 600, color: i === 0 ? GOLD : GREEN }}>{p.engagements} eng</div>
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, fontWeight: 600, color: i === 0 ? GOLD : GREEN, flexShrink: 0 }}>{p.engagements}</div>
               </div>
             ))}
           </div>
 
-          {/* Format Mix Placeholder */}
           <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px" }}>
             <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>LinkedIn Format Mix</div>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 20 }}>Avg engagements by content type · Frank LaRosa</div>
+            <div style={{ fontSize: 11, color: MUTED, marginBottom: 20 }}>Avg impressions & engagements by content type · Q1 2026</div>
             {formatMix.map((f, i) => (
-              <div key={i} style={{ marginBottom: 16 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ fontSize: 13, color: MUTED }}>{f}</span>
-                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, fontStyle: "italic" }}>Hootsuite needed</span>
+              <div key={i} style={{ marginBottom: 18 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                  <span style={{ fontSize: 13, color: "#f0f6fc", fontWeight: 500 }}>{f.name}</span>
+                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED }}>{f.avgImpr.toLocaleString()} impr · {f.avgEng} eng</span>
                 </div>
-                <div style={{ height: 6, background: "rgba(255,255,255,0.05)", borderRadius: 3, border: `1px dashed rgba(255,255,255,0.1)` }} />
+                <div style={{ height: 7, background: "rgba(255,255,255,0.06)", borderRadius: 3, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${(f.avgImpr / maxFmtImpr) * 100}%`, background: f.color, borderRadius: 3 }} />
+                </div>
               </div>
             ))}
-            <div style={{ marginTop: 12, padding: "10px 14px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8, fontSize: 11, color: GOLD, lineHeight: 1.5 }}>
-              ⚠ Awaiting Hootsuite export — video vs photo vs text vs link
+            <div style={{ marginTop: 8, padding: "10px 14px", background: BLUE_DIM, border: `1px solid rgba(88,166,255,0.15)`, borderRadius: 8, fontSize: 11, color: BLUE, lineHeight: 1.5 }}>
+              💡 Photo is Frank's highest-performing format — nearly abandoned in March in favor of video.
             </div>
           </div>
 
@@ -259,7 +308,7 @@ export default function App() {
       {/* FOOTER */}
       <div style={{ borderTop: `1px solid ${BORDER}`, padding: "12px 32px", display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: 10, color: MUTED, marginTop: 24 }}>
         <span>Elite Partners Group · Marketing Dashboard · Frank LaRosa LinkedIn</span>
-        <span>Sources: LinkedIn Analytics Export (Q1 2026) · Simplecast (Advisor Talk)</span>
+        <span>Source: LinkedIn Analytics Export · Jan 11 – Apr 10, 2026</span>
         <span>Q2 Engagement Goal: 2,250 · Monthly: 750 · Weekly: 187</span>
       </div>
     </div>
