@@ -19,14 +19,15 @@ const weeklyData = [
   { week: "Mar 16", engagements: 190, impressions: 9776,  posts: 26 },
   { week: "Mar 23", engagements: 44,  impressions: 8379,  posts: 24 },
   { week: "Mar 30", engagements: 86,  impressions: 9787,  posts: 7  },
-  { week: "Apr 06", engagements: 74,  impressions: 6632,  posts: 16 },
+  { week: "Apr 06", engagements: 93,  impressions: 8771,  posts: 16 },
+  { week: "Apr 13", engagements: 144, impressions: 10993, posts: 10 },
 ];
 
 const monthlyData = [
   { month: "Jan", engagements: 611, goal: 750 },
   { month: "Feb", engagements: 543, goal: 750 },
   { month: "Mar", engagements: 591, goal: 750 },
-  { month: "Apr*", engagements: 145, goal: 750 },
+  { month: "Apr*", engagements: 316, goal: 750 },
 ];
 
 const topPosts = [
@@ -105,7 +106,7 @@ export default function App() {
   const engMoM  = Math.round(((591 - 543) / 543) * 100);
   const imprMoM = Math.round(((46576 - 52925) / 52925) * 100);
   const follMoM = Math.round(((163 - 138) / 138) * 100);
-  const aprEng  = 145;
+  const aprEng  = 316;
   const aprGoal = 750;
   const aprPct  = Math.round((aprEng / aprGoal) * 100);
   const maxFmtEng = Math.max(...formatMix.map(f => f.avgEng));
@@ -127,11 +128,11 @@ export default function App() {
           <div style={{ width: 36, height: 36, background: GOLD, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#0a0f1e" }}>E</div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Elite Partners Group — Marketing Performance</div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Apr 13, 2026</div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Apr 20, 2026</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Apr 13, 2026</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Apr 20, 2026</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: MUTED }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
             Live Dashboard
@@ -154,7 +155,7 @@ export default function App() {
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>April Progress</div>
               <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: aprPct >= 50 ? GREEN : RED }}>{aprEng} / 750</div>
-              <div style={{ fontSize: 10, color: MUTED }}>{aprPct}% of goal · Apr 13</div>
+              <div style={{ fontSize: 10, color: MUTED }}>{aprPct}% of goal · Apr 20</div>
             </div>
             {[{ label: "May Goal", val: "700" }, { label: "June Goal", val: "800" }].map((g) => (
               <div key={g.label} style={{ textAlign: "center" }}>
@@ -170,7 +171,7 @@ export default function App() {
           <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (Mar)" value="591" delta={engMoM} deltaLabel="vs Feb (543)" accent={GOLD} large />
           <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (Mar)" value="46.6K" delta={imprMoM} deltaLabel="vs Feb (52.9K)" accent={BLUE} />
           <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (Mar)" value="163" delta={follMoM} deltaLabel="vs Feb (138)" accent={GREEN} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,764" accent={PURPLE} sub="As of April 13, 2026" />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,780" accent={PURPLE} sub="As of April 20, 2026" />
         </div>
 
         {/* ROW 2: CHARTS */}
@@ -217,7 +218,7 @@ export default function App() {
                 </BarChart>
               </ResponsiveContainer>
               <div style={{ fontSize: 10, color: MUTED, marginTop: 4, fontStyle: "italic" }}>
-                * Counts estimated from monthly totals (Feb 46, Mar 100). Apr 6 week = 16 confirmed via LinkedIn weekly tracker.
+                * Counts estimated from monthly totals (Feb 46, Mar 100). Apr weeks confirmed via LinkedIn Analytics export.
               </div>
             </div>
           </div>
@@ -237,13 +238,13 @@ export default function App() {
             </ResponsiveContainer>
             <div style={{ marginTop: 14, padding: "12px 14px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, color: GOLD }}>April Progress (13 days)</span>
+                <span style={{ fontSize: 11, color: GOLD }}>April Progress (20 days)</span>
                 <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{aprEng} / 750</span>
               </div>
               <div style={{ height: 6, background: "rgba(255,255,255,0.07)", borderRadius: 3, overflow: "hidden" }}>
                 <div style={{ height: "100%", width: `${Math.min(aprPct, 100)}%`, background: aprPct >= 50 ? GREEN : GOLD, borderRadius: 3 }} />
               </div>
-              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{aprPct}% of monthly goal · 17 days remaining</div>
+              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{aprPct}% of monthly goal · 10 days remaining</div>
             </div>
           </div>
         </div>
@@ -298,7 +299,7 @@ export default function App() {
               { label: "Total Engagements",  val: "1,745",   color: GOLD   },
               { label: "Total Impressions",   val: "149,474", color: BLUE   },
               { label: "New Followers",        val: "459",    color: GREEN  },
-              { label: "Total Followers",      val: "12,764", color: PURPLE },
+              { label: "Total Followers",      val: "12,780", color: PURPLE },
               { label: "Avg Eng / Month",      val: "582",    color: MUTED  },
               { label: "Posts Published",      val: "~181",   color: MUTED  },
             ].map((item) => (
@@ -357,7 +358,7 @@ export default function App() {
       {/* FOOTER */}
       <div style={{ borderTop: `1px solid ${BORDER}`, padding: "12px 32px", display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: 10, color: MUTED, marginTop: 24 }}>
         <span>Elite Partners Group · Marketing Dashboard · Frank LaRosa LinkedIn</span>
-        <span>Source: LinkedIn Analytics Export · Jan 11 – Apr 13, 2026</span>
+        <span>Source: LinkedIn Analytics Export · Jan 11 – Apr 20, 2026</span>
         <span>Q2 Goals: Apr 750 · May 700 · Jun 800 · Weekly: 187</span>
       </div>
     </div>
