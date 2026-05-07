@@ -217,7 +217,7 @@ export default function App() {
                   <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
                   <XAxis dataKey="week" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip />} cursor={false} />
                   <Bar dataKey="posts" name="Posts" fill={GOLD} radius={[3, 3, 0, 0]} cursor={false} />
                 </BarChart>
               </ResponsiveContainer>
@@ -235,7 +235,7 @@ export default function App() {
                 <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
                 <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltip />} cursor={false} />
                 <ReferenceLine y={750} stroke={GOLD} strokeDasharray="4 4" label={{ value: "Q2 Target", fill: GOLD, fontSize: 10 }} />
                 <Bar dataKey="engagements" name="Engagements" fill={GOLD} radius={[4, 4, 0, 0]} cursor={false} />
               </BarChart>
@@ -255,40 +255,76 @@ export default function App() {
 
         {/* ROW 3: YOY SCORECARD */}
         <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px", marginBottom: 14 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>Year-over-Year — March 2025 vs March 2026</div>
-          <div style={{ fontSize: 11, color: MUTED, marginBottom: 20 }}>Earliest comparable month available · LinkedIn Analytics Export · Jan–Feb 2025 unavailable (13-month export limit)</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>Year-over-Year — 2025 vs 2026</div>
+          <div style={{ fontSize: 11, color: MUTED, marginBottom: 20 }}>Mar sourced externally · Apr from LinkedIn Analytics Export · Jan–Mar 2025 unavailable (13-month export limit) · Apr 2025 missing Apr 1–2</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 14 }}>
 
             <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "18px 22px" }}>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 14 }}>Engagements</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 16 }}>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>Engagements</div>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: GOLD, marginBottom: 12 }}>March</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
                 <div>
                   <div style={{ fontSize: 10, color: BLUE, marginBottom: 3 }}>Mar 2025</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 40, fontWeight: 700, color: MUTED, lineHeight: 1 }}>229</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: MUTED, lineHeight: 1 }}>229</div>
                 </div>
-                <div style={{ fontSize: 24, color: "#2a3445", paddingTop: 16 }}>→</div>
+                <div style={{ fontSize: 20, color: "#2a3445", paddingTop: 14 }}>→</div>
                 <div>
                   <div style={{ fontSize: 10, color: GOLD, marginBottom: 3 }}>Mar 2026</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 40, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>591</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>591</div>
                 </div>
               </div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 14, fontWeight: 600, padding: "5px 14px", borderRadius: 20 }}>↑ +158%</div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 20 }}>↑ +158%</div>
             </div>
 
             <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "18px 22px" }}>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 14 }}>Impressions</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 16 }}>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>Impressions</div>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: GOLD, marginBottom: 12 }}>March</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
                 <div>
                   <div style={{ fontSize: 10, color: BLUE, marginBottom: 3 }}>Mar 2025</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 40, fontWeight: 700, color: MUTED, lineHeight: 1 }}>25K</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: MUTED, lineHeight: 1 }}>25K</div>
                 </div>
-                <div style={{ fontSize: 24, color: "#2a3445", paddingTop: 16 }}>→</div>
+                <div style={{ fontSize: 20, color: "#2a3445", paddingTop: 14 }}>→</div>
                 <div>
                   <div style={{ fontSize: 10, color: GOLD, marginBottom: 3 }}>Mar 2026</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 40, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>46K</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>46K</div>
                 </div>
               </div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 14, fontWeight: 600, padding: "5px 14px", borderRadius: 20 }}>↑ +84%</div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 20 }}>↑ +84%</div>
+            </div>
+
+            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "18px 22px" }}>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>Engagements</div>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: GOLD, marginBottom: 12 }}>April</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+                <div>
+                  <div style={{ fontSize: 10, color: BLUE, marginBottom: 3 }}>Apr 2025*</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: MUTED, lineHeight: 1 }}>424</div>
+                </div>
+                <div style={{ fontSize: 20, color: "#2a3445", paddingTop: 14 }}>→</div>
+                <div>
+                  <div style={{ fontSize: 10, color: GOLD, marginBottom: 3 }}>Apr 2026</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>419</div>
+                </div>
+              </div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: RED_DIM, color: RED, fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 20 }}>↓ -1%</div>
+            </div>
+
+            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "18px 22px" }}>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>Impressions</div>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: GOLD, marginBottom: 12 }}>April</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+                <div>
+                  <div style={{ fontSize: 10, color: BLUE, marginBottom: 3 }}>Apr 2025*</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: MUTED, lineHeight: 1 }}>30K</div>
+                </div>
+                <div style={{ fontSize: 20, color: "#2a3445", paddingTop: 14 }}>→</div>
+                <div>
+                  <div style={{ fontSize: 10, color: GOLD, marginBottom: 3 }}>Apr 2026</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>37K</div>
+                </div>
+              </div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 20 }}>↑ +23%</div>
             </div>
 
           </div>
