@@ -339,11 +339,11 @@ function buildHtml(data) {
         <tr>
           <td bgcolor="${SURFACE}" style="background:${SURFACE};padding:0;border-top:1px solid ${BORDER};">
             <table width="100%" cellpadding="0" cellspacing="0"><tr>
-              ${statCol('Engagements', (ig.engagements?.current || 0).toLocaleString(), ig.engagements?.pct)}
+              ${statCol('Engagements', (ig.engagements?.current || 0).toLocaleString(), ig.engagements?.pct, ig.engagements?.previous ? `vs ${ig.engagements.previous.toLocaleString()} last week` : '')}
               ${colDivider()}
-              ${statCol('Reach', formatK(ig.reach?.current), ig.reach?.pct)}
+              ${statCol('Reach', formatK(ig.reach?.current), ig.reach?.pct, ig.reach?.previous ? `vs ${formatK(ig.reach.previous)} last week` : '')}
               ${colDivider()}
-              ${statCol('Followers', `+${ig.followers?.current || 0}`, ig.followers?.pct)}
+              ${statCol('Followers', `+${ig.followers?.current || 0}`, ig.followers?.pct, ig.followers?.previous ? `vs +${ig.followers.previous} last week` : '')}
             </tr></table>
           </td>
         </tr>` : unavailableRow('Instagram', '#e1306c')}
@@ -366,11 +366,11 @@ function buildHtml(data) {
         <tr>
           <td bgcolor="${SURFACE}" style="background:${SURFACE};padding:0;border-top:1px solid ${BORDER};">
             <table width="100%" cellpadding="0" cellspacing="0"><tr>
-              ${statCol('Views', formatK(yt.views?.current), yt.views?.pct)}
+              ${statCol('Views', formatK(yt.views?.current), yt.views?.pct, yt.views?.previous ? `vs ${formatK(yt.views.previous)} last week` : '')}
               ${colDivider()}
-              ${statCol('Engagements', (yt.engagements?.current || 0).toLocaleString(), yt.engagements?.pct)}
+              ${statCol('Engagements', (yt.engagements?.current || 0).toLocaleString(), yt.engagements?.pct, yt.engagements?.previous ? `vs ${yt.engagements.previous.toLocaleString()} last week` : '')}
               ${colDivider()}
-              ${statCol('Subscribers', `+${yt.subscribers?.current || 0}`, yt.subscribers?.pct)}
+              ${statCol('Subscribers', `+${yt.subscribers?.current || 0}`, yt.subscribers?.pct, yt.subscribers?.previous ? `vs +${yt.subscribers.previous} last week` : '')}
             </tr></table>
           </td>
         </tr>` : unavailableRow('YouTube', '#ff4444')}
