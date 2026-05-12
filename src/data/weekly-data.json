@@ -3,18 +3,18 @@
   "weekOf": "May 12, 2026",
   "linkedin": {
     "engagements": {
-      "current": 39,
-      "previous": 29,
-      "pct": 34
+      "current": 36,
+      "previous": 26,
+      "pct": 39
     },
     "impressions": {
-      "current": 3916,
-      "previous": 2901,
+      "current": 3919,
+      "previous": 2903,
       "pct": 35
     },
     "membersReached": {
-      "current": 1205,
-      "previous": 899,
+      "current": 1207,
+      "previous": 901,
       "pct": 34
     },
     "followers": {
@@ -26,19 +26,19 @@
     "weeklyGoal": 187,
     "topPosts": [
       {
-        "preview": "new feed updates notifications",
+        "preview": "Elite Consulting Partners on LinkedIn • 2 min read",
         "reactions": 4,
         "impressions": 729,
         "format": "Post"
       },
       {
-        "preview": "22 years at a firm you love. A headhunter calls. You almost don't pick up. Shannon Reid was President of the Raymond Jam",
+        "preview": "278: What If You Never Try: One Decision That Changed Her Career - Elite Consulting Partners",
         "reactions": 1,
-        "impressions": 522,
+        "impressions": 523,
         "format": "Post"
       },
       {
-        "preview": "This week was brutal. I barely saw my wife. Half an hour in the morning. That was it. For days. And I own that. When she",
+        "preview": "How do you make it up to the people you love after a week that got away from you? 👇",
         "reactions": 3,
         "impressions": 482,
         "format": "Post"
@@ -91,7 +91,7 @@
       "weekOf": "May 12, 2026",
       "comments": 5,
       "reactions": 3,
-      "engagements": 39,
+      "engagements": 36,
       "followersGained": 0
     }
   ]

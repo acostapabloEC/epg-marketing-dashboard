@@ -370,13 +370,21 @@ async function extractTopPosts(page) {
       const reactMatch = lines[idx]?.match(/^(\d+)$/);
       if (reactMatch) { reactions = parseInt(reactMatch[1]); idx--; }
 
-      // Find first meaningful post text line (skip header + short lines + UI noise)
-      const postLines = lines.slice(0, idx + 1);
-      const uiNoise = /^(Frank LaRosa (reposted|posted) this|\d+\s*(notification|new feed|update)|Skip to|Keyboard|Close jump|Home|My Network|Jobs|Messaging|Notifications|Me\b|For Business|Sales Nav|Drafts|All activity|Posts|Comments|Videos|Images|More|Loaded \d+)/i;
-      const textIdx = postLines.findIndex(
-        l => !uiNoise.test(l) && !/^\d+[dwhm]?$/.test(l) && l.length > 20
-      );
-      const preview = textIdx >= 0 ? postLines[textIdx] : (postLines[postLines.length - 1] || '');
+      // Find post preview: search BACKWARD from idx so we get the line
+      // just above the metrics — that's always the actual post text.
+      const isPostText = (l) =>
+        l.length >= 30 &&
+        !/^Frank LaRosa (reposted|posted) this/i.test(l) &&
+        !/^\d+[dwhm]$/.test(l) &&
+        !/^(The chart|Line chart|Bar chart|End of interactive|Daily data)/i.test(l) &&
+        !/axis displaying/i.test(l) &&
+        !/^(Skip to|Keyboard|Home|My Network|Jobs|Messaging|Notifications|Me\b|For Business|Sales Nav|Analytics|Posts|Audience|Export|Past|Content performance|Top performing|Based on|Start a post|Members who)/i.test(l);
+
+      let textIdx = -1;
+      for (let j = idx; j >= 0; j--) {
+        if (isPostText(lines[j])) { textIdx = j; break; }
+      }
+      const preview = textIdx >= 0 ? lines[textIdx] : '';
 
       if (impressionsCount > 0 || reactions > 0) {
         posts.push({
