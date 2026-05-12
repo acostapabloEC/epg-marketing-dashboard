@@ -8,13 +8,13 @@
       "pct": 34
     },
     "impressions": {
-      "current": 3908,
-      "previous": 2895,
+      "current": 3915,
+      "previous": 2900,
       "pct": 35
     },
     "membersReached": {
-      "current": 1202,
-      "previous": 897,
+      "current": 1205,
+      "previous": 899,
       "pct": 34
     },
     "followers": {
@@ -46,48 +46,41 @@
     ]
   },
   "outbound": {
-    "comments": 6,
+    "comments": 5,
     "reactions": 3,
     "activity": [
       {
         "daysAgo": 0,
-        "author": "Like",
-        "snippet": "Reply",
+        "author": "Matt Halloran",
+        "frankComment": "💯",
         "date": "2026-05-12",
         "type": "comment"
       },
       {
         "daysAgo": 0,
-        "author": "Frank LaRosa Anything we can do to help them be better advisors, right?",
-        "snippet": "Like",
+        "author": "Sukesh Pai, CFA, EA",
+        "frankComment": "👏 👏",
         "date": "2026-05-12",
         "type": "comment"
       },
       {
         "daysAgo": 0,
-        "author": "👏 👏",
-        "snippet": "Like",
-        "date": "2026-05-12",
-        "type": "comment"
-      },
-      {
-        "daysAgo": 0,
-        "author": "Like",
-        "snippet": "Reply",
+        "author": "Claritas Financial Partners",
+        "frankComment": "👏",
         "date": "2026-05-12",
         "type": "comment"
       },
       {
         "daysAgo": 3,
-        "author": "👏 👏",
-        "snippet": "Like",
+        "author": "Merit Financial Advisors",
+        "frankComment": "👏 👏",
         "date": "2026-05-09",
         "type": "comment"
       },
       {
         "daysAgo": 3,
-        "author": "Like",
-        "snippet": "Reply",
+        "author": "Dynasty Financial Partners",
+        "frankComment": "👏",
         "date": "2026-05-09",
         "type": "comment"
       }
@@ -96,7 +89,7 @@
   "history": [
     {
       "weekOf": "May 12, 2026",
-      "comments": 6,
+      "comments": 5,
       "reactions": 3,
       "engagements": 39,
       "followersGained": 0
