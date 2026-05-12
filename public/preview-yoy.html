@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0f1e; font-family: 'DM Sans', sans-serif; color: #f0f6fc; padding: 32px; }
+  .label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #8892a4; }
+  .section-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .section-sub { font-size: 11px; color: #8892a4; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .card {
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-accent {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 10px 10px 0 0;
+  }
+  .month-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #c9a84c; margin-bottom: 12px; margin-top: 2px;
+  }
+  .metric-row { margin-bottom: 10px; }
+  .metric-row:last-child { margin-bottom: 0; }
+  .metric-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #8892a4; margin-bottom: 5px;
+  }
+  .values { display: flex; align-items: center; gap: 6px; }
+  .val-2025 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #4a5568; line-height: 1; }
+  .val-2026 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #f0f6fc; line-height: 1; }
+  .arrow { font-size: 11px; color: #2a3445; }
+  .badge {
+    font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 10px;
+    font-family: 'DM Mono', monospace;
+  }
+  .badge-up   { background: rgba(63,185,80,0.15);  color: #3fb950; }
+  .badge-down { background: rgba(248,81,73,0.15);  color: #f85149; }
+  .badge-tbd  { background: rgba(201,168,76,0.12); color: #c9a84c; }
+  .tbd-val { font-family: 'DM Mono', monospace; font-size: 13px; color: #c9a84c; }
+  .partial-note {
+    font-family: 'DM Mono', monospace; font-size: 8px; color: #8892a4;
+    margin-top: 3px; letter-spacing: 0.5px;
+  }
+  .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 9px 0; }
+</style>
+</head>
+<body>
+
+<div style="background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 24px;">
+  <div class="section-title">Year-over-Year — 2025 vs 2026</div>
+  <div class="section-sub">Mar–Apr sourced externally · May–Aug from LinkedIn Analytics Export (Apr 8, 2025 – May 12, 2026)</div>
+
+  <div class="grid">
+
+    <!-- MARCH -->
+    <div class="card">
+      <div class="card-accent" style="background:#c9a84c;"></div>
+      <div class="month-label">March</div>
+      <div class="metric-row">
+        <div class="metric-label">Engagements</div>
+        <div class="values">
+          <span class="val-2025">357</span>
+          <span class="arrow">→</span>
+          <span class="val-2026">591</span>
+        </div>
+        <div style="margin-top:4px;"><span class="badge badge-up">↑ +66%</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="metric-row">
+        <div class="metric-label">Impressions</div>
+        <div class="values">
+          <span class="val-2025" style="font-size:14px;">—</span>
+          <span class="arrow">→</span>
+          <span class="val-2026" style="font-size:18px;">46K</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- APRIL -->
+    <div class="card">
+      <div class="card-accent" style="background:#c9a84c;"></div>
+      <div class="month-label">April</div>
+      <div class="metric-row">
+        <div class="metric-label">Engagements</div>
+        <div class="values">
+          <span class="val-2025">440</span>
+          <span class="arrow">→</span>
+          <span class="val-2026">419</span>
+        </div>
+        <div style="margin-top:4px;"><span class="badge badge-down">↓ -5%</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="metric-row">
+        <div class="metric-label">Impressions</div>
+        <div class="values">
+          <span class="val-2025">30K</span>
+          <span class="arrow">→</span>
+          <span class="val-2026" style="font-size:18px;">37K</span>
+        </div>
+        <div style="margin-top:4px;"><span class="badge badge-up">↑ +23%</span></div>
+      </div>
+    </div>
+
+    <!-- MAY (partial) -->
+    <div class="card">
+      <div class="card-accent" style="background:#58a6ff;"></div>
+      <div class="month-label">May</div>
+      <div class="metric-row">
+        <div class="metric-label">Engagements</div>
+        <div class="values">
+          <span class="val-2025">497</span>
+          <span class="arrow">→</span>
+          <span class="val-2026">36</span>
+        </div>
+        <div class="partial-note">wk 1–2 · updating live</div>
+      </div>
+      <div class="divider"></div>
+      <div class="metric-row">
+        <div class="metric-label">Impressions</div>
+        <div class="values">
+          <span class="val-2025">29K</span>
+          <span class="arrow">→</span>
+          <span class="val-2026">3.9K</span>
+        </div>
+        <div class="partial-note">wk 1–2 · updating live</div>
+      </div>
+    </div>
+
+    <!-- JUNE -->
+    <div class="card">
+      <div class="card-accent" style="background:rgba(255,255,255,0.1);"></div>
+      <div class="month-label">June</div>
+      <div class="metric-row">
+        <div class="metric-label">Engagements</div>
+        <div class="values">
+          <span class="val-2025">354</span>
+          <span class="arrow">→</span>
+          <span class="tbd-val">TBD</span>
+        </div>
+        <div style="margin-top:4px;"><span class="badge badge-tbd">Goal: 800</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="metric-row">
+        <div class="metric-label">Impressions</div>
+        <div class="values">
+          <span class="val-2025">20K</span>
+          <span class="arrow">→</span>
+          <span class="tbd-val">TBD</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- JULY -->
+    <div class="card">
+      <div class="card-accent" style="background:rgba(255,255,255,0.1);"></div>
+      <div class="month-label">July</div>
+      <div class="metric-row">
+        <div class="metric-label">Engagements</div>
+        <div class="values">
+          <span class="val-2025">319</span>
+          <span class="arrow">→</span>
+          <span class="tbd-val">TBD</span>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="metric-row">
+        <div class="metric-label">Impressions</div>
+        <div class="values">
+          <span class="val-2025">22K</span>
+          <span class="arrow">→</span>
+          <span class="tbd-val">TBD</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUGUST -->
+    <div class="card">
+      <div class="card-accent" style="background:rgba(255,255,255,0.1);"></div>
+      <div class="month-label">August</div>
+      <div class="metric-row">
+        <div class="metric-label">Engagements</div>
+        <div class="values">
+          <span class="val-2025">346</span>
+          <span class="arrow">→</span>
+          <span class="tbd-val">TBD</span>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="metric-row">
+        <div class="metric-label">Impressions</div>
+        <div class="values">
+          <span class="val-2025">32K</span>
+          <span class="arrow">→</span>
+          <span class="tbd-val">TBD</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

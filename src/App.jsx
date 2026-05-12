@@ -65,6 +65,45 @@ const MUTED    = "#8892a4";
 const BORDER   = "rgba(255,255,255,0.07)";
 const SURFACE  = "#111827";
 
+function YoYCard({ month, accent, eng25, eng26, impr25, impr26, engPct, imprPct, live }) {
+  const badge = (pct, live) => {
+    if (live) return <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 8, color: BLUE, marginTop: 3 }}>wk 1–2 · updating live</div>;
+    if (pct === null) return <div style={{ display: "inline-flex", alignItems: "center", background: "rgba(201,168,76,0.1)", color: GOLD, fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 10, marginTop: 4, fontFamily: "'DM Mono',monospace" }}>TBD</div>;
+    const up = pct >= 0;
+    return <div style={{ display: "inline-flex", alignItems: "center", background: up ? GREEN_DIM : RED_DIM, color: up ? GREEN : RED, fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 10, marginTop: 4, fontFamily: "'DM Mono',monospace" }}>{up ? "↑" : "↓"} {up ? "+" : ""}{pct}%</div>;
+  };
+  const val26Style = { fontFamily: "'Playfair Display',serif", fontSize: 22, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 };
+  const val25Style = { fontFamily: "'Playfair Display',serif", fontSize: 17, fontWeight: 700, color: "#4a5568", lineHeight: 1 };
+  return (
+    <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: accent }} />
+      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase", color: GOLD, marginBottom: 10, marginTop: 2 }}>{month}</div>
+
+      <div style={{ marginBottom: 9 }}>
+        <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 8, letterSpacing: 1.5, textTransform: "uppercase", color: MUTED, marginBottom: 5 }}>Engagements</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={val25Style}>{eng25}</span>
+          <span style={{ fontSize: 10, color: "#2a3445" }}>→</span>
+          <span style={val26Style}>{eng26 ?? "—"}</span>
+        </div>
+        {badge(engPct, live)}
+      </div>
+
+      <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "8px 0" }} />
+
+      <div>
+        <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 8, letterSpacing: 1.5, textTransform: "uppercase", color: MUTED, marginBottom: 5 }}>Impressions</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={val25Style}>{impr25 ?? "—"}</span>
+          <span style={{ fontSize: 10, color: "#2a3445" }}>→</span>
+          <span style={val26Style}>{impr26 ?? "—"}</span>
+        </div>
+        {badge(imprPct, live)}
+      </div>
+    </div>
+  );
+}
+
 function KpiCard({ source, label, value, delta, deltaLabel, accent, large, sub }) {
   const isUp = delta > 0;
   return (
@@ -262,77 +301,14 @@ export default function App() {
         {/* ROW 3: YOY SCORECARD */}
         <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px", marginBottom: 14 }}>
           <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>Year-over-Year — 2025 vs 2026</div>
-          <div style={{ fontSize: 11, color: MUTED, marginBottom: 20 }}>Mar sourced externally · Apr from LinkedIn Analytics Export · Jan–Mar 2025 unavailable (13-month export limit) · Apr 2025 missing Apr 1–2</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 14 }}>
-
-            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "18px 22px" }}>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>Engagements</div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: GOLD, marginBottom: 12 }}>March</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
-                <div>
-                  <div style={{ fontSize: 10, color: BLUE, marginBottom: 3 }}>Mar 2025</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: MUTED, lineHeight: 1 }}>229</div>
-                </div>
-                <div style={{ fontSize: 20, color: "#2a3445", paddingTop: 14 }}>→</div>
-                <div>
-                  <div style={{ fontSize: 10, color: GOLD, marginBottom: 3 }}>Mar 2026</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>591</div>
-                </div>
-              </div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 20 }}>↑ +158%</div>
-            </div>
-
-            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "18px 22px" }}>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>Impressions</div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: GOLD, marginBottom: 12 }}>March</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
-                <div>
-                  <div style={{ fontSize: 10, color: BLUE, marginBottom: 3 }}>Mar 2025</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: MUTED, lineHeight: 1 }}>25K</div>
-                </div>
-                <div style={{ fontSize: 20, color: "#2a3445", paddingTop: 14 }}>→</div>
-                <div>
-                  <div style={{ fontSize: 10, color: GOLD, marginBottom: 3 }}>Mar 2026</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>46K</div>
-                </div>
-              </div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 20 }}>↑ +84%</div>
-            </div>
-
-            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "18px 22px" }}>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>Engagements</div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: GOLD, marginBottom: 12 }}>April</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
-                <div>
-                  <div style={{ fontSize: 10, color: BLUE, marginBottom: 3 }}>Apr 2025*</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: MUTED, lineHeight: 1 }}>424</div>
-                </div>
-                <div style={{ fontSize: 20, color: "#2a3445", paddingTop: 14 }}>→</div>
-                <div>
-                  <div style={{ fontSize: 10, color: GOLD, marginBottom: 3 }}>Apr 2026</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>419</div>
-                </div>
-              </div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: RED_DIM, color: RED, fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 20 }}>↓ -1%</div>
-            </div>
-
-            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "18px 22px" }}>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>Impressions</div>
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: GOLD, marginBottom: 12 }}>April</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
-                <div>
-                  <div style={{ fontSize: 10, color: BLUE, marginBottom: 3 }}>Apr 2025*</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: MUTED, lineHeight: 1 }}>30K</div>
-                </div>
-                <div style={{ fontSize: 20, color: "#2a3445", paddingTop: 14 }}>→</div>
-                <div>
-                  <div style={{ fontSize: 10, color: GOLD, marginBottom: 3 }}>Apr 2026</div>
-                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: "#f0f6fc", lineHeight: 1 }}>37K</div>
-                </div>
-              </div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 20 }}>↑ +23%</div>
-            </div>
-
+          <div style={{ fontSize: 11, color: MUTED, marginBottom: 16 }}>Mar–Apr sourced externally · May–Aug from LinkedIn Analytics Export · 2025 benchmarks shown for upcoming months</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
+            <YoYCard month="March"  accent={GOLD}                        eng25="357"  eng26="591"  engPct={66}   impr25="—"    impr26="46K"  imprPct={null} />
+            <YoYCard month="April"  accent={GOLD}                        eng25="440"  eng26="419"  engPct={-5}   impr25="30K"  impr26="37K"  imprPct={23}   />
+            <YoYCard month="May"    accent={BLUE}                        eng25="497"  eng26={String(liveData.linkedin?.engagements?.current ?? "—")}  engPct={0}  impr25="29K"  impr26={liveData.linkedin?.impressions?.current ? Math.round(liveData.linkedin.impressions.current/1000)+"K" : "—"}  imprPct={0}  live />
+            <YoYCard month="June"   accent="rgba(255,255,255,0.08)"      eng25="354"  eng26={null} engPct={null} impr25="20K"  impr26={null} imprPct={null} />
+            <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={null} engPct={null} impr25="22K"  impr26={null} imprPct={null} />
+            <YoYCard month="August" accent="rgba(255,255,255,0.08)"      eng25="346"  eng26={null} engPct={null} impr25="32K"  impr26={null} imprPct={null} />
           </div>
         </div>
 
