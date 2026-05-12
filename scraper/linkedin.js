@@ -370,10 +370,11 @@ async function extractTopPosts(page) {
       const reactMatch = lines[idx]?.match(/^(\d+)$/);
       if (reactMatch) { reactions = parseInt(reactMatch[1]); idx--; }
 
-      // Find first meaningful post text line (skip header + short lines)
+      // Find first meaningful post text line (skip header + short lines + UI noise)
       const postLines = lines.slice(0, idx + 1);
+      const uiNoise = /^(Frank LaRosa (reposted|posted) this|\d+\s*(notification|new feed|update)|Skip to|Keyboard|Close jump|Home|My Network|Jobs|Messaging|Notifications|Me\b|For Business|Sales Nav|Drafts|All activity|Posts|Comments|Videos|Images|More|Loaded \d+)/i;
       const textIdx = postLines.findIndex(
-        l => !/^Frank LaRosa (reposted|posted) this/.test(l) && !/^\d+d$/.test(l) && l.length > 20
+        l => !uiNoise.test(l) && !/^\d+[dwhm]?$/.test(l) && l.length > 20
       );
       const preview = textIdx >= 0 ? postLines[textIdx] : (postLines[postLines.length - 1] || '');
 
