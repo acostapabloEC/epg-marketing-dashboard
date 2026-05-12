@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Scraper — secrets and debug artifacts
+scraper/.env
+scraper/.session.json
+scraper/edge-profile/
+scraper/debug-*.png
+scraper/debug-*.txt
+scraper/run.log
+scraper/node_modules/
