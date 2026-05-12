@@ -53,16 +53,30 @@ async function ensureLoggedIn(page, email, password) {
 
   console.log('  Logging in...');
   await page.goto('https://www.linkedin.com/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(3000);
+  await page.screenshot({ path: path.join(__dirname, 'debug-login-page.png'), fullPage: true });
 
-  // Wait for the form to actually be ready
-  await page.waitForSelector('#username', { timeout: 15000 });
-  await page.waitForTimeout(800);
+  // LinkedIn sometimes shows a "Welcome Back" saved-account picker instead of the login form
+  const hasSavedAccount = await page.locator('text=Sign in using another account').isVisible({ timeout: 3000 }).catch(() => false);
 
-  // Type like a human — character by character with small delays
-  await page.click('#username');
-  await page.type('#username', email, { delay: 80 });
-  await page.waitForTimeout(500);
+  if (hasSavedAccount) {
+    console.log('  Saved account picker detected — clicking Frank\'s card...');
+    await page.locator('button.member-profile__details').first().click();
+    await page.waitForTimeout(3000);
+    await page.screenshot({ path: path.join(__dirname, 'debug-after-card-click.png'), fullPage: true });
+    console.log('  Post-card-click screenshot saved.');
+  }
+
+  // Now handle the standard login form (email + password) or just password prompt
+  const hasUsername = await page.locator('#username').isVisible({ timeout: 5000 }).catch(() => false);
+
+  if (hasUsername) {
+    await page.click('#username');
+    await page.type('#username', email, { delay: 80 });
+    await page.waitForTimeout(500);
+  }
+
+  await page.waitForSelector('#password', { timeout: 15000 });
   await page.click('#password');
   await page.type('#password', password, { delay: 70 });
   await page.waitForTimeout(700);
@@ -133,6 +147,10 @@ async function scrapeAnalytics(page) {
   console.log('  Loading audience analytics...');
   const followers = await extractFollowerMetrics(page);
 
+  // ── Outbound activity (MotionMedia accountability) ─────────────────────────
+  console.log('  Loading outbound activity...');
+  const outbound = await scrapeOutboundActivity(page);
+
   return {
     weekOf,
     linkedin: {
@@ -144,7 +162,135 @@ async function scrapeAnalytics(page) {
       weeklyGoal: 187,
       topPosts,
     },
+    outbound,
   };
+}
+
+// ── Outbound activity scraper ───────────────────────────────────────────────
+
+async function scrapeOutboundActivity(page) {
+  const result = { comments: 0, reactions: 0, activity: [] };
+
+  try {
+    // ── Comments Frank made on other posts ──────────────────────────────────
+    await page.goto('https://www.linkedin.com/in/me/recent-activity/comments/', {
+      waitUntil: 'domcontentloaded', timeout: 30000,
+    });
+    await page.waitForTimeout(3500);
+    await page.screenshot({ path: path.join(__dirname, 'debug-outbound-comments.png'), fullPage: true });
+
+    const commentsText = await page.evaluate(() => document.body.innerText);
+    fs.writeFileSync(path.join(__dirname, 'debug-outbound-comments.txt'), commentsText.slice(0, 12000));
+
+    const commentItems = parseActivityItems(commentsText, 7);
+    result.comments = commentItems.length;
+    result.activity  = commentItems.map(i => ({ ...i, type: 'comment' }));
+
+    console.log(`  Outbound comments this week: ${result.comments}`);
+
+    // ── Reactions Frank gave on other posts ─────────────────────────────────
+    await page.goto('https://www.linkedin.com/in/me/recent-activity/reactions/', {
+      waitUntil: 'domcontentloaded', timeout: 30000,
+    });
+    await page.waitForTimeout(3500);
+
+    const reactionsText = await page.evaluate(() => document.body.innerText);
+    fs.writeFileSync(path.join(__dirname, 'debug-outbound-reactions.txt'), reactionsText.slice(0, 12000));
+
+    const reactionItems = parseActivityItems(reactionsText, 7);
+    result.reactions = reactionItems.length;
+
+    console.log(`  Outbound reactions this week: ${result.reactions}`);
+
+  } catch (e) {
+    console.warn('  Outbound activity scrape failed:', e.message);
+  }
+
+  return result;
+}
+
+// Parse LinkedIn activity page text — counts items within maxDays
+// Splits on "Feed post number X" blocks to avoid picking up UI button text
+function parseActivityItems(text, maxDays) {
+  const items = [];
+
+  // Split into per-post blocks using "Feed post number N" as separator
+  const blocks = text.split(/Feed post number \d+/i).slice(1); // slice(1) drops the header
+
+  for (const block of blocks) {
+    const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+
+    // Each block must contain "• You" — that's Frank's entry
+    const youIdx = lines.findIndex(l => l.includes('• You'));
+    if (youIdx === -1) continue;
+
+    // Time marker: first "Xd", "Xh", "Xw" etc. line after "• You"
+    let daysAgo = null;
+    let timeIdx = -1;
+    for (let i = youIdx + 1; i < Math.min(youIdx + 6, lines.length); i++) {
+      const m = lines[i].match(/^(\d+)([dwhm])/);
+      if (m) {
+        const num  = parseInt(m[1]);
+        const unit = m[2];
+        daysAgo = unit === 'd' ? num
+                : unit === 'w' ? num * 7
+                : unit === 'h' || unit === 'm' ? 0
+                : 99;
+        timeIdx = i;
+        break;
+      }
+    }
+
+    if (daysAgo === null || daysAgo > maxDays) continue;
+
+    // Post author: first substantive line in the block, skipping intro phrases
+    const skipPatterns = [
+      /Frank LaRosa commented on this/i,
+      /Frank LaRosa reacted to this/i,
+      /Frank LaRosa reposted this/i,
+      /^\d+[dwhm]$/,
+      /^•/,
+      /^(Like|Reply|Comment|Repost|Send)$/i,
+    ];
+    let postAuthor = '';
+    for (const l of lines) {
+      if (skipPatterns.some(p => p.test(l))) continue;
+      if (l.length < 3) continue;
+      postAuthor = l.slice(0, 80);
+      break;
+    }
+
+    // Frank's comment: lines after the time marker that aren't UI chrome
+    const uiWords = /^(Like|Reply|Comment|Repost|Send|Load more|Follow|Connect|Message|View profile|Show more|People you may know)$/i;
+    const isMetadata = (l) =>
+      uiWords.test(l) ||
+      /^\d+$/.test(l) ||
+      /^\d+[dwhm]$/.test(l) ||
+      /^\d+\s+(reply|replies|impression|repost|comment)/i.test(l) ||
+      /impressions$/i.test(l) ||
+      /^(Load more|Show more|People you)/i.test(l) ||
+      /^Frank LaRosa/i.test(l) ||
+      /on Frank LaRosa/i.test(l);
+
+    const commentLines = [];
+    for (const l of lines.slice(timeIdx + 1)) {
+      if (isMetadata(l)) break; // stop at first metadata line
+      if (l.length < 1) continue;
+      commentLines.push(l);
+      if (commentLines.length >= 2) break; // max 2 lines
+    }
+
+    const frankComment = commentLines.join(' ').slice(0, 160);
+
+    items.push({
+      daysAgo,
+      author:      postAuthor,
+      frankComment: frankComment || '(reaction)',
+      date: new Date(Date.now() - daysAgo * 864e5).toISOString().split('T')[0],
+    });
+  }
+
+  return items;
 }
 
 // ── Metric extraction helpers ───────────────────────────────────────────────

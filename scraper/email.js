@@ -199,6 +199,17 @@ function buildHtml(data) {
     </td>
   </tr>
   <tr><td height="1" bgcolor="${BORDER}" style="background:${BORDER};font-size:0;line-height:0;">&nbsp;</td></tr>
+  <!-- Landing page link bar -->
+  <tr>
+    <td bgcolor="${GOLD_D}" style="background:${GOLD_D};padding:10px 28px;border-left:1px solid ${BORDER};border-right:1px solid ${BORDER};">
+      <table width="100%" cellpadding="0" cellspacing="0"><tr>
+        <td><span style="font-family:'DM Mono',Courier New,monospace;font-size:10px;color:${MUTED};">Elite Consulting Partners</span></td>
+        <td align="right">
+          <a href="https://elite-landing-eta.vercel.app/" style="font-family:'DM Mono',Courier New,monospace;font-size:10px;font-weight:600;color:${GOLD};text-decoration:none;letter-spacing:1px;">&#8594; View Marketing Dashboard</a>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
   <tr><td height="16" bgcolor="${BG}" style="background:${BG};font-size:0;line-height:0;">&nbsp;</td></tr>
 
   <!-- ════ LINKEDIN ════════════════════════════════════════════════════════ -->

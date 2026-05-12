@@ -22,6 +22,9 @@ export async function fetchHootsuiteAttachments() {
     logger: false,
   });
 
+  // Prevent unhandled 'error' event from crashing Node when IMAP is disabled
+  client.on('error', () => {});
+
   await client.connect();
   const saved = [];
 

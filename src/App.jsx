@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import liveData from "./data/weekly-data.json";
 import {
   AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip,
@@ -106,7 +107,12 @@ function Clock() {
   return <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 14, color: "#f0f6fc", letterSpacing: 1 }}>{h}:{m} {ampm}</span>;
 }
 
+const ORANGE = "#f97316";
+const ORANGE_DIM = "rgba(249,115,22,0.12)";
+
 export default function App() {
+  const outbound = liveData.outbound || { comments: 0, reactions: 0, activity: [] };
+  const history  = liveData.history  || [];
   const engMoM  = Math.round(((419 - 591) / 591) * 100);
   const imprMoM = Math.round(((35497 - 46576) / 46576) * 100);
   const follMoM = Math.round(((93 - 163) / 163) * 100);
@@ -392,6 +398,78 @@ export default function App() {
             </div>
           </div>
 
+        </div>
+
+        {/* ROW 5: OUTBOUND ACTIVITY */}
+        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px", marginTop: 14, marginBottom: 14, position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: ORANGE, borderRadius: "12px 12px 0 0" }} />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>Outbound Activity — MotionMedia</div>
+              <div style={{ fontSize: 11, color: MUTED }}>Frank's comments & reactions on other posts · Week of {liveData.weekOf}</div>
+            </div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 1, textTransform: "uppercase", background: ORANGE_DIM, color: ORANGE, padding: "4px 10px", borderRadius: 6, border: `1px solid rgba(249,115,22,0.2)` }}>Agency Accountability</div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "200px 200px 1fr", gap: 14 }}>
+
+            {/* Comments KPI */}
+            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "16px 20px" }}>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 8 }}>Comments Made</div>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, color: "#f0f6fc", lineHeight: 1, marginBottom: 8 }}>{outbound.comments}</div>
+              {outbound.comments === 0
+                ? <div style={{ fontSize: 11, color: MUTED, fontStyle: "italic" }}>No data yet</div>
+                : <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: outbound.comments > 0 ? GREEN_DIM : RED_DIM, color: outbound.comments > 0 ? GREEN : RED, fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 20 }}>this week</div>
+              }
+            </div>
+
+            {/* Reactions KPI */}
+            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "16px 20px" }}>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 8 }}>Reactions Given</div>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, color: "#f0f6fc", lineHeight: 1, marginBottom: 8 }}>{outbound.reactions}</div>
+              {outbound.reactions === 0
+                ? <div style={{ fontSize: 11, color: MUTED, fontStyle: "italic" }}>No data yet</div>
+                : <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: GREEN_DIM, color: GREEN, fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 20 }}>this week</div>
+              }
+            </div>
+
+            {/* Activity list or trend chart */}
+            <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "16px 20px" }}>
+              {history.length > 1 ? (
+                <>
+                  <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 10, color: MUTED }}>Outbound vs. Engagement Growth</div>
+                  <ResponsiveContainer width="100%" height={120}>
+                    <AreaChart data={history} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
+                      <XAxis dataKey="weekOf" tick={{ fill: MUTED, fontSize: 9 }} axisLine={false} tickLine={false} tickFormatter={w => w.split(" ").slice(0,2).join(" ")} />
+                      <YAxis tick={{ fill: MUTED, fontSize: 9 }} axisLine={false} tickLine={false} />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Area type="monotone" dataKey="comments"    name="Comments"     stroke={ORANGE} strokeWidth={2} fill="rgba(249,115,22,0.1)" dot={false} />
+                      <Area type="monotone" dataKey="reactions"   name="Reactions"    stroke={GOLD}   strokeWidth={2} fill="rgba(201,168,76,0.1)" dot={false} />
+                      <Area type="monotone" dataKey="engagements" name="Engagements"  stroke={GREEN}  strokeWidth={2} fill="rgba(63,185,80,0.08)"  dot={false} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 10, color: MUTED }}>Recent Activity</div>
+                  {outbound.activity.length > 0
+                    ? outbound.activity.slice(0, 4).map((item, i) => (
+                        <div key={i} style={{ padding: "7px 0", borderBottom: `1px solid ${BORDER}`, display: "flex", gap: 10, alignItems: "flex-start" }}>
+                          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: ORANGE, flexShrink: 0, paddingTop: 2 }}>{item.daysAgo}d ago</div>
+                          <div>
+                            <div style={{ fontSize: 11, color: "#f0f6fc", fontWeight: 500 }}>{item.author}</div>
+                            <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>{item.frankComment}</div>
+                          </div>
+                        </div>
+                      ))
+                    : <div style={{ fontSize: 12, color: MUTED, fontStyle: "italic", paddingTop: 8 }}>Trend chart appears after 2+ weeks of data. Activity list populates after first live scrape.</div>
+                  }
+                </>
+              )}
+            </div>
+
+          </div>
         </div>
       </div>
 

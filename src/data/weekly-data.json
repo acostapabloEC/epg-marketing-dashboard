@@ -1,0 +1,105 @@
+{
+  "updatedAt": "2026-05-12",
+  "weekOf": "May 12, 2026",
+  "linkedin": {
+    "engagements": {
+      "current": 39,
+      "previous": 29,
+      "pct": 34
+    },
+    "impressions": {
+      "current": 3908,
+      "previous": 2895,
+      "pct": 35
+    },
+    "membersReached": {
+      "current": 1202,
+      "previous": 897,
+      "pct": 34
+    },
+    "followers": {
+      "gained": 0,
+      "total": 12819,
+      "pct": 0
+    },
+    "posts": 0,
+    "weeklyGoal": 187,
+    "topPosts": [
+      {
+        "preview": "0 notifications total",
+        "reactions": 4,
+        "impressions": 729,
+        "format": "Post"
+      },
+      {
+        "preview": "22 years at a firm you love. A headhunter calls. You almost don't pick up. Shannon Reid was President of the Raymond Jam",
+        "reactions": 1,
+        "impressions": 522,
+        "format": "Post"
+      },
+      {
+        "preview": "This week was brutal. I barely saw my wife. Half an hour in the morning. That was it. For days. And I own that. When she",
+        "reactions": 3,
+        "impressions": 482,
+        "format": "Post"
+      }
+    ]
+  },
+  "outbound": {
+    "comments": 6,
+    "reactions": 3,
+    "activity": [
+      {
+        "daysAgo": 0,
+        "author": "Like",
+        "snippet": "Reply",
+        "date": "2026-05-12",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 0,
+        "author": "Frank LaRosa Anything we can do to help them be better advisors, right?",
+        "snippet": "Like",
+        "date": "2026-05-12",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 0,
+        "author": "👏 👏",
+        "snippet": "Like",
+        "date": "2026-05-12",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 0,
+        "author": "Like",
+        "snippet": "Reply",
+        "date": "2026-05-12",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 3,
+        "author": "👏 👏",
+        "snippet": "Like",
+        "date": "2026-05-09",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 3,
+        "author": "Like",
+        "snippet": "Reply",
+        "date": "2026-05-09",
+        "type": "comment"
+      }
+    ]
+  },
+  "history": [
+    {
+      "weekOf": "May 12, 2026",
+      "comments": 6,
+      "reactions": 3,
+      "engagements": 39,
+      "followersGained": 0
+    }
+  ]
+}
