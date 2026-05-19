@@ -25,6 +25,8 @@ const weeklyData = [
   { week: "Apr 20", engagements: 56,  impressions: 8273,  posts: 9  },
   { week: "Apr 27", engagements: 68,  impressions: 3073,  posts: 5  },
   { week: "May 04", engagements: 35,  impressions: 1306,  posts: 4  },
+  { week: "May 11", engagements: 36,  impressions: 3753,  posts: 0  },
+  { week: "May 19", engagements: 49,  impressions: 3903,  posts: 0  },
 ];
 
 const monthlyData = [
@@ -32,7 +34,7 @@ const monthlyData = [
   { month: "Feb",  engagements: 542, goal: 750 },
   { month: "Mar",  engagements: 591, goal: 750 },
   { month: "Apr",  engagements: 419, goal: 750 },
-  { month: "May*", engagements: 48,  goal: 700 },
+  { month: "May*", engagements: 85,  goal: 700 },
 ];
 
 const topPosts = [
@@ -177,11 +179,11 @@ export default function App() {
           <div style={{ width: 36, height: 36, background: GOLD, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#0a0f1e" }}>E</div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Elite Partners Group — Marketing Performance</div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Apr 28, 2026</div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – May 19, 2026</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Apr 28, 2026</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – May 19, 2026</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: MUTED }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
             Live Dashboard
@@ -220,7 +222,7 @@ export default function App() {
           <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (Apr)" value="419" delta={engMoM} deltaLabel="vs Mar (591)" accent={GOLD} large />
           <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (Apr)" value="35.5K" delta={imprMoM} deltaLabel="vs Mar (46.6K)" accent={BLUE} />
           <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (Apr)" value="93" delta={follMoM} deltaLabel="vs Mar (163)" accent={GREEN} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,789" accent={PURPLE} sub="As of April 28, 2026" />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,827" accent={PURPLE} sub="As of May 19, 2026" />
         </div>
 
         {/* ROW 2: CHARTS */}
@@ -452,7 +454,7 @@ export default function App() {
       {/* FOOTER */}
       <div style={{ borderTop: `1px solid ${BORDER}`, padding: "12px 32px", display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: 10, color: MUTED, marginTop: 24 }}>
         <span>Elite Partners Group · Marketing Dashboard · Frank LaRosa LinkedIn</span>
-        <span>Source: LinkedIn Analytics Export · Apr 29, 2025 – Apr 28, 2026</span>
+        <span>Source: LinkedIn Analytics Export · Apr 29, 2025 – May 19, 2026</span>
         <span>Q2 Goals: Apr 750 · May 700 · Jun 800 · Weekly: 187</span>
       </div>
     </div>

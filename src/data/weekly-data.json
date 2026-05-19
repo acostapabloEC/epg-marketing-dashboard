@@ -1,87 +1,87 @@
 {
-  "updatedAt": "2026-05-12",
-  "weekOf": "May 12, 2026",
+  "updatedAt": "2026-05-19",
+  "weekOf": "May 19, 2026",
   "linkedin": {
     "engagements": {
-      "current": 36,
-      "previous": 26,
-      "pct": 39
+      "current": 49,
+      "previous": 36,
+      "pct": 36
     },
     "impressions": {
-      "current": 3920,
-      "previous": 2904,
-      "pct": 35
+      "current": 3903,
+      "previous": 3753,
+      "pct": 4
     },
     "membersReached": {
-      "current": 1207,
-      "previous": 901,
-      "pct": 34
+      "current": 1441,
+      "previous": 1242,
+      "pct": 16
     },
     "followers": {
       "gained": 0,
-      "total": 12819,
+      "total": 12827,
       "pct": 0
     },
     "posts": 0,
     "weeklyGoal": 187,
     "topPosts": [
       {
-        "preview": "Elite Consulting Partners on LinkedIn • 2 min read",
-        "reactions": 4,
-        "impressions": 730,
+        "preview": "Frank LaRosa on LinkedIn • 5+ min read",
+        "reactions": 6,
+        "impressions": 945,
         "format": "Post"
       },
       {
-        "preview": "278: What If You Never Try: One Decision That Changed Her Career - Elite Consulting Partners",
-        "reactions": 1,
-        "impressions": 523,
+        "preview": "That investment always pays dividends.",
+        "reactions": 18,
+        "impressions": 674,
         "format": "Post"
       },
       {
-        "preview": "How do you make it up to the people you love after a week that got away from you? 👇",
-        "reactions": 3,
-        "impressions": 482,
+        "preview": "Are you sure the firm you are at is actually the right fit for where your practice is headed? 👇",
+        "reactions": 2,
+        "impressions": 598,
         "format": "Post"
       }
     ]
   },
   "outbound": {
     "comments": 5,
-    "reactions": 3,
+    "reactions": 5,
     "activity": [
       {
         "daysAgo": 0,
-        "author": "Matt Halloran",
-        "frankComment": "💯",
-        "date": "2026-05-12",
+        "author": "Frank LaRosa replied to Jeremy Belfiore’s comment on this",
+        "frankComment": "14 hours ago • Visible to anyone on or off LinkedIn Everyone saw the AdvisorHub headline: “Ameriprise raises recruiter bounties to 16%.”",
+        "date": "2026-05-19",
         "type": "comment"
       },
       {
         "daysAgo": 0,
-        "author": "Sukesh Pai, CFA, EA",
-        "frankComment": "👏 👏",
-        "date": "2026-05-12",
+        "author": "Nicholas Lanier",
+        "frankComment": "👏",
+        "date": "2026-05-19",
         "type": "comment"
       },
       {
         "daysAgo": 0,
         "author": "Claritas Financial Partners",
-        "frankComment": "👏",
-        "date": "2026-05-12",
+        "frankComment": "💯",
+        "date": "2026-05-19",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 0,
+        "author": "McLaughlin Private Wealth",
+        "frankComment": "Love this….",
+        "date": "2026-05-19",
         "type": "comment"
       },
       {
         "daysAgo": 3,
-        "author": "Merit Financial Advisors",
-        "frankComment": "👏 👏",
-        "date": "2026-05-09",
-        "type": "comment"
-      },
-      {
-        "daysAgo": 3,
-        "author": "Dynasty Financial Partners",
-        "frankComment": "👏",
-        "date": "2026-05-09",
+        "author": "Philip Waxelbaum",
+        "frankComment": "Philip Waxelbaum I have a great deal of respect for your professionalism and experience. On this particular topic, I categorically disagree with your position f",
+        "date": "2026-05-16",
         "type": "comment"
       }
     ]
@@ -92,6 +92,20 @@
       "comments": 5,
       "reactions": 3,
       "engagements": 36,
+      "followersGained": 0
+    },
+    {
+      "weekOf": "May 13, 2026",
+      "comments": 0,
+      "reactions": 0,
+      "engagements": 0,
+      "followersGained": 0
+    },
+    {
+      "weekOf": "May 19, 2026",
+      "comments": 5,
+      "reactions": 5,
+      "engagements": 49,
       "followersGained": 0
     }
   ]
