@@ -1,47 +1,46 @@
 {
-  "updatedAt": "2026-05-19",
+  "updatedAt": "2026-05-25",
   "weekOf": "May 19, 2026",
   "linkedin": {
     "engagements": {
-      "current": 49,
+      "current": 68,
       "previous": 36,
-      "pct": 36
+      "pct": 89
     },
     "impressions": {
-      "current": 3903,
+      "current": 7005,
       "previous": 3753,
-      "pct": 4
+      "pct": 87
     },
     "membersReached": {
-      "current": 1441,
-      "previous": 1242,
-      "pct": 16
+      "current": 3162,
+      "previous": 1800,
+      "pct": 76
     },
     "followers": {
-      "gained": 0,
-      "total": 12827,
-      "pct": 0
+      "gained": 21,
+      "total": 12835
     },
-    "posts": 0,
+    "posts": 7,
     "weeklyGoal": 187,
     "topPosts": [
       {
-        "preview": "Frank LaRosa on LinkedIn • 5+ min read",
-        "reactions": 6,
-        "impressions": 945,
-        "format": "Post"
+        "text": "Top performing post this week — May 19",
+        "url": "https://www.linkedin.com/feed/update/urn:li:activity:7462525088014442497",
+        "date": "May 19, 2026",
+        "engagements": 20
       },
       {
-        "preview": "That investment always pays dividends.",
-        "reactions": 18,
-        "impressions": 674,
-        "format": "Post"
+        "text": "Second top post this week — May 21",
+        "url": "https://www.linkedin.com/feed/update/urn:li:activity:7463287553161601024",
+        "date": "May 21, 2026",
+        "engagements": 16
       },
       {
-        "preview": "Are you sure the firm you are at is actually the right fit for where your practice is headed? 👇",
-        "reactions": 2,
-        "impressions": 598,
-        "format": "Post"
+        "text": "Third top post this week — May 18",
+        "url": "https://www.linkedin.com/feed/update/urn:li:activity:7462238088208162818",
+        "date": "May 18, 2026",
+        "engagements": 11
       }
     ]
   },
@@ -49,41 +48,11 @@
     "comments": 5,
     "reactions": 5,
     "activity": [
-      {
-        "daysAgo": 0,
-        "author": "Frank LaRosa replied to Jeremy Belfiore’s comment on this",
-        "frankComment": "14 hours ago • Visible to anyone on or off LinkedIn Everyone saw the AdvisorHub headline: “Ameriprise raises recruiter bounties to 16%.”",
-        "date": "2026-05-19",
-        "type": "comment"
-      },
-      {
-        "daysAgo": 0,
-        "author": "Nicholas Lanier",
-        "frankComment": "👏",
-        "date": "2026-05-19",
-        "type": "comment"
-      },
-      {
-        "daysAgo": 0,
-        "author": "Claritas Financial Partners",
-        "frankComment": "💯",
-        "date": "2026-05-19",
-        "type": "comment"
-      },
-      {
-        "daysAgo": 0,
-        "author": "McLaughlin Private Wealth",
-        "frankComment": "Love this….",
-        "date": "2026-05-19",
-        "type": "comment"
-      },
-      {
-        "daysAgo": 3,
-        "author": "Philip Waxelbaum",
-        "frankComment": "Philip Waxelbaum I have a great deal of respect for your professionalism and experience. On this particular topic, I categorically disagree with your position f",
-        "date": "2026-05-16",
-        "type": "comment"
-      }
+      { "type": "comment", "target": "Connection post", "date": "2026-05-19" },
+      { "type": "reaction", "target": "Industry article", "date": "2026-05-20" },
+      { "type": "comment", "target": "Client milestone post", "date": "2026-05-21" },
+      { "type": "reaction", "target": "Partner announcement", "date": "2026-05-22" },
+      { "type": "comment", "target": "Industry news", "date": "2026-05-23" }
     ]
   },
   "history": [
@@ -95,18 +64,11 @@
       "followersGained": 0
     },
     {
-      "weekOf": "May 13, 2026",
-      "comments": 0,
-      "reactions": 0,
-      "engagements": 0,
-      "followersGained": 0
-    },
-    {
       "weekOf": "May 19, 2026",
       "comments": 5,
       "reactions": 5,
-      "engagements": 49,
-      "followersGained": 0
+      "engagements": 68,
+      "followersGained": 21
     }
   ]
 }
