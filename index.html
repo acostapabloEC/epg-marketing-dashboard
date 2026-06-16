@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EPG Marketing Dashboard</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  <!-- Elite Tracker -->
+  <script>
+  (function() {
+    var WH = "https://default0de46722b9794e2ba8aa8900bae0ac.3c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/682610202cb74ed49894efdb5d3fca40/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=gYRIhSNUoh8opZAKusYaAcVVeSbdV1HgrbaveeqOzMc";
+    var DN = "LinkedIn Dashboard";
+    function send(geo) {
+      var ua = navigator.userAgent;
+      var br = /Chrome/.test(ua) ? "Chrome" : /Firefox/.test(ua) ? "Firefox" : /Safari/.test(ua) ? "Safari" : "Other";
+      var dv = /Mobile|Android|iPhone|iPad/.test(ua) ? "Mobile" : "Desktop";
+      var os = /Windows/.test(ua) ? "Windows" : /Mac/.test(ua) ? "Mac" : /Android/.test(ua) ? "Android" : "Other";
+      var ref = document.referrer ? new URL(document.referrer).hostname : "Direct";
+      var time = new Date().toLocaleString("en-US", {timeZone:"America/New_York",dateStyle:"medium",timeStyle:"short"});
+      var loc = geo ? (geo.city + ", " + geo.region + " - " + geo.org) : "Unknown";
+      var ip = geo ? geo.ip : "Unknown";
+      var card = {
+        type: "message",
+        attachments: [{
+          contentType: "application/vnd.microsoft.card.adaptive",
+          content: {
+            type: "AdaptiveCard", version: "1.4",
+            body: [
+              { type: "TextBlock", text: "[VISIT] " + DN, weight: "Bolder", size: "Medium", color: "Accent" },
+              { type: "FactSet", facts: [
+                { title: "Dashboard", value: DN },
+                { title: "Time",      value: time },
+                { title: "Location",  value: loc },
+                { title: "IP",        value: ip },
+                { title: "Device",    value: br + " on " + os + " (" + dv + ")" },
+                { title: "Referrer",  value: ref }
+              ]}
+            ]
+          }
+        }]
+      };
+      fetch(WH, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(card)}).catch(function(){});
+    }
+    window.addEventListener("load", function() {
+      fetch("https://ipapi.co/json/")
+        .then(function(r) { return r.json(); })
+        .then(function(geo) { send(geo); })
+        .catch(function() { send(null); });
+    });
+  })();
+  </script>
+  <!-- End Elite Tracker -->
+  </body>
+</html>
