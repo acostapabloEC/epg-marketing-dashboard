@@ -41,8 +41,8 @@ const monthlyData = [
   { month: "Feb",  engagements: 542, goal: 750 },
   { month: "Mar",  engagements: 591, goal: 750 },
   { month: "Apr",  engagements: 419, goal: 750 },
-  { month: "May",  engagements: 179, goal: 700 },
-  { month: "Jun*", engagements: 653, goal: 800 },
+  { month: "May",  engagements: 212, goal: 700 },
+  { month: "Jun",  engagements: 672, goal: 800 },
 ];
 
 const topPosts = [
@@ -160,9 +160,9 @@ const ORANGE_DIM = "rgba(249,115,22,0.12)";
 export default function App() {
   const outbound = liveData.outbound || { comments: 0, reactions: 0, activity: [] };
   const history  = liveData.history  || [];
-  const engMoM  = Math.round(((262 - 179) / 179) * 100);
-  const imprMoM = Math.round(((31177 - 18031) / 18031) * 100);
-  const follMoM = Math.round(((26 - 66) / 66) * 100);
+  const engMoM  = Math.round(((672 - 212) / 212) * 100);
+  const imprMoM = Math.round(((82982 - 19904) / 19904) * 100);
+  const follMoM = Math.round(((176 - 88) / 88) * 100);
   const mayEng  = 262;
   const mayGoal = 800;
   const mayPct  = Math.round((mayEng / mayGoal) * 100);
@@ -185,11 +185,11 @@ export default function App() {
           <div style={{ width: 36, height: 36, background: GOLD, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#0a0f1e" }}>E</div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Elite Partners Group — Marketing Performance</div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Jun 8, 2026</div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Jun 30, 2026</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Jun 8, 2026</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Jun 30, 2026</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: MUTED }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
             Live Dashboard
@@ -225,10 +225,10 @@ export default function App() {
 
         {/* ROW 1: KPI CARDS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 20 }}>
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (May)" value="169" delta={engMoM} deltaLabel="vs Apr (419)" accent={GOLD} large />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (May)" value="15.9K" delta={imprMoM} deltaLabel="vs Apr (37K)" accent={BLUE} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (May)" value="66" delta={follMoM} deltaLabel="vs Apr (104)" accent={GREEN} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,952" accent={PURPLE} sub="As of Jun 28, 2026" />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (June)" value="672" delta={engMoM} deltaLabel="vs May (212)" accent={GOLD} large />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (June)" value="83.0K" delta={imprMoM} deltaLabel="vs May (19.9K)" accent={BLUE} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (June)" value="176" delta={follMoM} deltaLabel="vs May (88)" accent={GREEN} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,956" accent={PURPLE} sub="As of Jul 1, 2026" />
         </div>
 
         {/* ROW 2: CHARTS */}
