@@ -1,46 +1,44 @@
 {
-  "updatedAt": "2026-05-25",
-  "weekOf": "May 19, 2026",
+  "updatedAt": "2026-06-30",
+  "weekOf": "June 30, 2026",
   "linkedin": {
     "engagements": {
-      "current": 68,
-      "previous": 36,
-      "pct": 89
+      "current": 178,
+      "previous": 183,
+      "pct": -3
     },
     "impressions": {
-      "current": 7005,
-      "previous": 3753,
-      "pct": 87
+      "current": 22606,
+      "previous": 22399,
+      "pct": 1
     },
     "membersReached": {
-      "current": 3162,
-      "previous": 1800,
-      "pct": 76
+      "current": 10115,
+      "previous": 10595,
+      "pct": -5
     },
     "followers": {
-      "gained": 21,
-      "total": 12835
+      "gained": 35,
+      "total": 12952,
+      "pct": 0
     },
-    "posts": 7,
+    "posts": 12,
     "weeklyGoal": 187,
     "topPosts": [
       {
-        "text": "Top performing post this week — May 19",
-        "url": "https://www.linkedin.com/feed/update/urn:li:activity:7462525088014442497",
-        "date": "May 19, 2026",
-        "engagements": 20
+        "preview": "After being fired from my job, for weeks I would scroll through job postings every single day. I had run a group of offices with $150 million in revenue. Then came the drive through Morristown, the PSE&G workers on the side of the road, and the conversation in the car that changed everything.",
+        "reactions": 52,
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7475247612170842114-au7g"
       },
       {
-        "text": "Second top post this week — May 21",
-        "url": "https://www.linkedin.com/feed/update/urn:li:activity:7463287553161601024",
-        "date": "May 21, 2026",
-        "engagements": 16
+        "preview": "I spent years helping people build their careers. Calls made on their behalf, doors opened, time given that I was never getting paid to give. They scattered like rats when you flick the light switch on.",
+        "reactions": 47,
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7473797430015152128-RkSE"
       },
       {
-        "text": "Third top post this week — May 18",
-        "url": "https://www.linkedin.com/feed/update/urn:li:activity:7462238088208162818",
-        "date": "May 18, 2026",
-        "engagements": 11
+        "preview": "The hardest lesson I can talk about right now is one I'm currently living through. I believe most people quit on things right before they're about to work — right when the pressure is highest and quitting feels most reasonable.",
+        "reactions": 17,
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7476696316212076545-liAj"
       }
     ]
   },
@@ -48,11 +46,41 @@
     "comments": 5,
     "reactions": 5,
     "activity": [
-      { "type": "comment", "target": "Connection post", "date": "2026-05-19" },
-      { "type": "reaction", "target": "Industry article", "date": "2026-05-20" },
-      { "type": "comment", "target": "Client milestone post", "date": "2026-05-21" },
-      { "type": "reaction", "target": "Partner announcement", "date": "2026-05-22" },
-      { "type": "comment", "target": "Industry news", "date": "2026-05-23" }
+      {
+        "daysAgo": 0,
+        "author": "Jeff Nash",
+        "frankComment": "👏",
+        "date": "2026-06-16",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 0,
+        "author": "InvestmentNews",
+        "frankComment": "👏",
+        "date": "2026-06-16",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 0,
+        "author": "Nick Klein",
+        "frankComment": "👏",
+        "date": "2026-06-16",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 0,
+        "author": "Pine Valley Investments, LLC",
+        "frankComment": "👏",
+        "date": "2026-06-16",
+        "type": "comment"
+      },
+      {
+        "daysAgo": 0,
+        "author": "Jamison A. Davis, CEPA®, CMAA, CPBC",
+        "frankComment": "👏",
+        "date": "2026-06-16",
+        "type": "comment"
+      }
     ]
   },
   "history": [
@@ -69,6 +97,48 @@
       "reactions": 5,
       "engagements": 68,
       "followersGained": 21
+    },
+    {
+      "weekOf": "May 26, 2026",
+      "comments": 5,
+      "reactions": 2,
+      "engagements": 46,
+      "followersGained": 0
+    },
+    {
+      "weekOf": "June 2, 2026",
+      "comments": 5,
+      "reactions": 1,
+      "engagements": 0,
+      "followersGained": 0
+    },
+    {
+      "weekOf": "June 9, 2026",
+      "comments": 5,
+      "reactions": 0,
+      "engagements": 167,
+      "followersGained": 26
+    },
+    {
+      "weekOf": "June 16, 2026",
+      "comments": 5,
+      "reactions": 5,
+      "engagements": 208,
+      "followersGained": 53
+    },
+    {
+      "weekOf": "June 23, 2026",
+      "comments": 5,
+      "reactions": 5,
+      "engagements": 183,
+      "followersGained": 39
+    },
+    {
+      "weekOf": "June 30, 2026",
+      "comments": 5,
+      "reactions": 5,
+      "engagements": 178,
+      "followersGained": 35
     }
   ]
 }
