@@ -24,9 +24,16 @@ const weeklyData = [
   { week: "Apr 13", engagements: 144, impressions: 10993, posts: 10 },
   { week: "Apr 20", engagements: 56,  impressions: 8273,  posts: 9  },
   { week: "Apr 27", engagements: 68,  impressions: 3073,  posts: 5  },
-  { week: "May 04", engagements: 35,  impressions: 1306,  posts: 4  },
-  { week: "May 11", engagements: 36,  impressions: 3753,  posts: 0  },
-  { week: "May 19", engagements: 68,  impressions: 7005,  posts: 7  },
+  { week: "May 04", engagements: 50,  impressions: 4064,  posts: 4  },
+  { week: "May 11", engagements: 35,  impressions: 3179,  posts: 0  },
+  { week: "May 18", engagements: 70,  impressions: 7588,  posts: 7  },
+  { week: "May 25", engagements: 24,  impressions: 3200,  posts: 4  },
+  { week: "Jun 01", engagements: 83,  impressions: 14931, posts: 10 },
+  { week: "Jun 08", engagements: 12,  impressions: 1392,  posts: 2  },
+  { week: "Jun 15", engagements: 167, impressions: 14854, posts: 15 },
+  { week: "Jun 22", engagements: 208, impressions: 27499, posts: 15 },
+  { week: "Jun 29", engagements: 183, impressions: 22399, posts: 15 },
+  { week: "Jul 06", engagements: 178, impressions: 22606, posts: 12 },
 ];
 
 const monthlyData = [
@@ -34,15 +41,14 @@ const monthlyData = [
   { month: "Feb",  engagements: 542, goal: 750 },
   { month: "Mar",  engagements: 591, goal: 750 },
   { month: "Apr",  engagements: 419, goal: 750 },
-  { month: "May*", engagements: 153, goal: 700 },
+  { month: "May",  engagements: 179, goal: 700 },
+  { month: "Jun*", engagements: 653, goal: 800 },
 ];
 
 const topPosts = [
-  { date: "Jan 12", engagements: 253, impressions: 12709, format: "Photo",  preview: "Son Taylor sworn into the bar at NJ Supreme Court — a proud father moment" },
-  { date: "Mar 20", engagements: 100, impressions: 9756,  format: "Photo",  preview: "Farewell to Benjamin Hassett after 4 years at Elite Consulting Partners" },
-  { date: "Feb 09", engagements: 98,  impressions: 5035,  format: "Photo",  preview: "Celebrating Mari Estenes' 2-year anniversary as Executive Administrator at ECP" },
-  { date: "Jan 15", engagements: 69,  impressions: 4388,  format: "Status", preview: "Cetera/Osaic rumors: separating fact from speculation" },
-  { date: "Feb 14", engagements: 65,  impressions: 3958,  format: "Photo",  preview: "Valentine's Day: building Elite and building a life with Kim" },
+  { date: "Jun 23", engagements: 68, impressions: 6382, format: "Status", preview: "After being fired from my job, for weeks I would scroll through job postings every single day. I had run a group of offices with $150 million in revenue." },
+  { date: "Jun 19", engagements: 25, impressions: 2604, format: "Status", preview: "I spent years helping people build their careers. They scattered like rats when you flick the light switch on." },
+  { date: "Jun 27", engagements: 12, impressions: 927,  format: "Status", preview: "The hardest lesson I can talk about right now is one I'm currently living through. Most people quit right before it works." },
 ];
 
 const formatColors = { Photo: "#3fb950", Link: "#c9a84c", Status: "#58a6ff", Video: "#f85149" };
@@ -154,12 +160,12 @@ const ORANGE_DIM = "rgba(249,115,22,0.12)";
 export default function App() {
   const outbound = liveData.outbound || { comments: 0, reactions: 0, activity: [] };
   const history  = liveData.history  || [];
-  const engMoM  = Math.round(((419 - 591) / 591) * 100);
-  const imprMoM = Math.round(((35497 - 46576) / 46576) * 100);
-  const follMoM = Math.round(((93 - 163) / 163) * 100);
-  const aprEng  = 419;
-  const aprGoal = 750;
-  const aprPct  = Math.round((aprEng / aprGoal) * 100);
+  const engMoM  = Math.round(((262 - 179) / 179) * 100);
+  const imprMoM = Math.round(((31177 - 18031) / 18031) * 100);
+  const follMoM = Math.round(((26 - 66) / 66) * 100);
+  const mayEng  = 262;
+  const mayGoal = 800;
+  const mayPct  = Math.round((mayEng / mayGoal) * 100);
   const maxFmtEng = Math.max(...formatMix.map(f => f.avgEng));
 
   return (
@@ -179,11 +185,11 @@ export default function App() {
           <div style={{ width: 36, height: 36, background: GOLD, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#0a0f1e" }}>E</div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Elite Partners Group — Marketing Performance</div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – May 25, 2026</div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Jun 8, 2026</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – May 25, 2026</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Jun 8, 2026</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: MUTED }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
             Live Dashboard
@@ -204,9 +210,9 @@ export default function App() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>April Progress</div>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: aprPct >= 50 ? GREEN : RED }}>{aprEng} / 750</div>
-              <div style={{ fontSize: 10, color: MUTED }}>{aprPct}% of goal · Apr 28</div>
+              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>May Final · Jun in progress</div>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: mayPct >= 50 ? GREEN : RED }}>{mayEng} / 700</div>
+              <div style={{ fontSize: 10, color: MUTED }}>{mayPct}% of goal · final</div>
             </div>
             {[{ label: "May Goal", val: "700" }, { label: "June Goal", val: "800" }].map((g) => (
               <div key={g.label} style={{ textAlign: "center" }}>
@@ -219,10 +225,10 @@ export default function App() {
 
         {/* ROW 1: KPI CARDS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 20 }}>
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (Apr)" value="419" delta={engMoM} deltaLabel="vs Mar (591)" accent={GOLD} large />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (Apr)" value="35.5K" delta={imprMoM} deltaLabel="vs Mar (46.6K)" accent={BLUE} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (Apr)" value="93" delta={follMoM} deltaLabel="vs Mar (163)" accent={GREEN} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,835" accent={PURPLE} sub="As of May 25, 2026" />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (May)" value="169" delta={engMoM} deltaLabel="vs Apr (419)" accent={GOLD} large />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (May)" value="15.9K" delta={imprMoM} deltaLabel="vs Apr (37K)" accent={BLUE} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (May)" value="66" delta={follMoM} deltaLabel="vs Apr (104)" accent={GREEN} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,952" accent={PURPLE} sub="As of Jun 28, 2026" />
         </div>
 
         {/* ROW 2: CHARTS */}
@@ -289,13 +295,13 @@ export default function App() {
             </ResponsiveContainer>
             <div style={{ marginTop: 14, padding: "12px 14px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, color: GOLD }}>April Progress (22 days)</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{aprEng} / 750</span>
+                <span style={{ fontSize: 11, color: GOLD }}>May Progress (thru May 25)</span>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{mayEng} / 700</span>
               </div>
               <div style={{ height: 6, background: "rgba(255,255,255,0.07)", borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${Math.min(aprPct, 100)}%`, background: aprPct >= 50 ? GREEN : GOLD, borderRadius: 3 }} />
+                <div style={{ height: "100%", width: `${Math.min(mayPct, 100)}%`, background: mayPct >= 50 ? GREEN : GOLD, borderRadius: 3 }} />
               </div>
-              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{aprPct}% of monthly goal · April final</div>
+              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{mayPct}% of monthly goal · May final</div>
             </div>
           </div>
         </div>
@@ -307,7 +313,7 @@ export default function App() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
             <YoYCard month="March"  accent={GOLD}                        eng25="357"  eng26="591"  engPct={66}   impr25="—"    impr26="46K"  imprPct={null} />
             <YoYCard month="April"  accent={GOLD}                        eng25="440"  eng26="419"  engPct={-5}   impr25="30K"  impr26="37K"  imprPct={23}   />
-            <YoYCard month="May"    accent={BLUE}                        eng25="497"  eng26={String(liveData.linkedin?.engagements?.current ?? "—")}  engPct={0}  impr25="29K"  impr26={liveData.linkedin?.impressions?.current ? Math.round(liveData.linkedin.impressions.current/1000)+"K" : "—"}  imprPct={0}  live />
+            <YoYCard month="May"    accent={BLUE}                        eng25="497"  eng26="169"  engPct={-66}  impr25="29K"  impr26="16K"  imprPct={-45}  live />
             <YoYCard month="June"   accent="rgba(255,255,255,0.08)"      eng25="354"  eng26={null} engPct={null} impr25="20K"  impr26={null} imprPct={null} />
             <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={null} engPct={null} impr25="22K"  impr26={null} imprPct={null} />
             <YoYCard month="August" accent="rgba(255,255,255,0.08)"      eng25="346"  eng26={null} engPct={null} impr25="32K"  impr26={null} imprPct={null} />
