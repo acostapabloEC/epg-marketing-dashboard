@@ -48,9 +48,9 @@ const monthlyData = [
 ];
 
 const topPosts = [
-  { date: "Jul 04", engagements: 161, impressions: 17924, format: "Status", preview: "#MindsetShift #EntrepreneurLife #BuildingABusiness" },
-  { date: "Jul 02", engagements: 17,  impressions: 765,   format: "Status", preview: "#EliteConsultingPartners #EntrepreneurLife" },
-  { date: "Jul 01", engagements: 8,   impressions: 1221,  format: "Status", preview: "#ApexPredatorRacing #Ferrari — Frank LaRosa" },
+  { date: "Jul 04", engagements: 161, impressions: 17924, format: "Status", preview: "I was 40 years old, sitting in my basement in New Jersey, cold-calling from a $125 desk I bought at Staples. 18 months earlier I had been a managing director running $150 million in revenue." },
+  { date: "Jul 02", engagements: 17,  impressions: 765,   format: "Status", preview: "15 years ago I started this company from a desk in my basement. I had just lost my job. My accounts were frozen, my deferred money was gone, and I had 18 months ahead of me where I couldn't pay my mortgage." },
+  { date: "Jul 01", engagements: 8,   impressions: 1221,  format: "Status", preview: "When you start the 296 by just hitting the button it fires up in EV mode. It hums. Quietly. Almost politely. Nobody does that. You soft touch the button so the car turns on without fully starting." },
 ];
 
 const formatColors = { Photo: "#3fb950", Link: "#c9a84c", Status: "#58a6ff", Video: "#f85149" };
