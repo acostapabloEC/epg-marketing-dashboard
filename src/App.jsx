@@ -162,10 +162,10 @@ const ORANGE_DIM = "rgba(249,115,22,0.12)";
 export default function App() {
   const outbound = liveData.outbound || { comments: 0, reactions: 0, activity: [] };
   const history  = liveData.history  || [];
-  const engMoM  = Math.round(((636 - 212) / 212) * 100);
-  const imprMoM = Math.round(((77878 - 19904) / 19904) * 100);
-  const follMoM = Math.round(((161 - 88) / 88) * 100);
-  const mayEng  = 262;
+  const engMoM  = Math.round(((185 - 636) / 636) * 100);
+  const imprMoM = Math.round(((19028 - 77878) / 77878) * 100);
+  const follMoM = Math.round(((73 - 161) / 161) * 100);
+  const mayEng  = 636;
   const mayGoal = 800;
   const mayPct  = Math.round((mayEng / mayGoal) * 100);
   const maxFmtEng = Math.max(...formatMix.map(f => f.avgEng));
@@ -187,11 +187,11 @@ export default function App() {
           <div style={{ width: 36, height: 36, background: GOLD, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#0a0f1e" }}>E</div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Elite Partners Group — Marketing Performance</div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Jun 28, 2026</div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Jul 5, 2026</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Jun 28, 2026</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Jul 5, 2026</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: MUTED }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
             Live Dashboard
@@ -212,11 +212,11 @@ export default function App() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>May Final · Jun in progress</div>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: mayPct >= 50 ? GREEN : RED }}>{mayEng} / 700</div>
+              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>Jun Final · Jul in progress</div>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: mayPct >= 50 ? GREEN : RED }}>{mayEng} / 800</div>
               <div style={{ fontSize: 10, color: MUTED }}>{mayPct}% of goal · final</div>
             </div>
-            {[{ label: "May Goal", val: "700" }, { label: "June Goal", val: "800" }].map((g) => (
+            {[{ label: "Jun Goal", val: "800" }, { label: "Jul Goal", val: "700" }].map((g) => (
               <div key={g.label} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>{g.label}</div>
                 <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: GOLD }}>{g.val}</div>
@@ -227,10 +227,10 @@ export default function App() {
 
         {/* ROW 1: KPI CARDS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 20 }}>
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (June, thru 28)" value="636" delta={engMoM} deltaLabel="vs May (212)" accent={GOLD} large />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (June, thru 28)" value="77.9K" delta={imprMoM} deltaLabel="vs May (19.9K)" accent={BLUE} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (June, thru 28)" value="161" delta={follMoM} deltaLabel="vs May (88)" accent={GREEN} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="12,952" accent={PURPLE} sub="As of Jun 28, 2026" />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (July, thru 5)" value="185" delta={engMoM} deltaLabel="vs Jun (636)" accent={GOLD} large />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (July, thru 5)" value="19.0K" delta={imprMoM} deltaLabel="vs Jun (77.9K)" accent={BLUE} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (July, thru 5)" value="73" delta={follMoM} deltaLabel="vs Jun (161)" accent={GREEN} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="13,020" accent={PURPLE} sub="As of Jul 5, 2026" />
         </div>
 
         {/* ROW 2: CHARTS */}
@@ -297,13 +297,13 @@ export default function App() {
             </ResponsiveContainer>
             <div style={{ marginTop: 14, padding: "12px 14px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, color: GOLD }}>May Progress (thru May 25)</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{mayEng} / 700</span>
+                <span style={{ fontSize: 11, color: GOLD }}>Jun Final (thru Jun 28)</span>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{mayEng} / 800</span>
               </div>
               <div style={{ height: 6, background: "rgba(255,255,255,0.07)", borderRadius: 3, overflow: "hidden" }}>
                 <div style={{ height: "100%", width: `${Math.min(mayPct, 100)}%`, background: mayPct >= 50 ? GREEN : GOLD, borderRadius: 3 }} />
               </div>
-              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{mayPct}% of monthly goal · May final</div>
+              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{mayPct}% of monthly goal · Jun final</div>
             </div>
           </div>
         </div>
