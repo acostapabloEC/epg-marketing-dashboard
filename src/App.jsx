@@ -34,6 +34,7 @@ const weeklyData = [
   { week: "Jun 22", engagements: 208, impressions: 27499, posts: 15 },
   { week: "Jun 29", engagements: 183, impressions: 22399, posts: 15 },
   { week: "Jun 28", engagements: 178, impressions: 22606, posts: 12 },
+  { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7  },
 ];
 
 const monthlyData = [
@@ -43,12 +44,13 @@ const monthlyData = [
   { month: "Apr",  engagements: 419, goal: 750 },
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 636, goal: 800 },
+  { month: "Jul",  engagements: 185, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Jun 23", engagements: 68, impressions: 6382, format: "Status", preview: "After being fired from my job, for weeks I would scroll through job postings every single day. I had run a group of offices with $150 million in revenue." },
-  { date: "Jun 19", engagements: 25, impressions: 2604, format: "Status", preview: "I spent years helping people build their careers. They scattered like rats when you flick the light switch on." },
-  { date: "Jun 27", engagements: 12, impressions: 927,  format: "Status", preview: "The hardest lesson I can talk about right now is one I'm currently living through. Most people quit right before it works." },
+  { date: "Jul 04", engagements: 161, impressions: 17924, format: "Status", preview: "#MindsetShift #EntrepreneurLife #BuildingABusiness" },
+  { date: "Jul 02", engagements: 17,  impressions: 765,   format: "Status", preview: "#EliteConsultingPartners #EntrepreneurLife" },
+  { date: "Jul 01", engagements: 8,   impressions: 1221,  format: "Status", preview: "#ApexPredatorRacing #Ferrari — Frank LaRosa" },
 ];
 
 const formatColors = { Photo: "#3fb950", Link: "#c9a84c", Status: "#58a6ff", Video: "#f85149" };
@@ -315,7 +317,7 @@ export default function App() {
             <YoYCard month="April"  accent={GOLD}                        eng25="440"  eng26="419"  engPct={-5}   impr25="30K"  impr26="37K"  imprPct={23}   />
             <YoYCard month="May"    accent={BLUE}                        eng25="497"  eng26="169"  engPct={-66}  impr25="29K"  impr26="16K"  imprPct={-45}  live />
             <YoYCard month="June"   accent="rgba(255,255,255,0.08)"      eng25="354"  eng26={null} engPct={null} impr25="20K"  impr26={null} imprPct={null} />
-            <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={null} engPct={null} impr25="22K"  impr26={null} imprPct={null} />
+            <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={185}  engPct={-42}  impr25="22K"  impr26="19K"  imprPct={-14} live />
             <YoYCard month="August" accent="rgba(255,255,255,0.08)"      eng25="346"  eng26={null} engPct={null} impr25="32K"  impr26={null} imprPct={null} />
           </div>
         </div>

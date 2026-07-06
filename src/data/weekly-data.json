@@ -1,44 +1,44 @@
 {
-  "updatedAt": "2026-06-28",
-  "weekOf": "June 28, 2026",
+  "updatedAt": "2026-07-06",
+  "weekOf": "July 1, 2026",
   "linkedin": {
     "engagements": {
-      "current": 178,
-      "previous": 183,
-      "pct": -3
+      "current": 185,
+      "previous": 178,
+      "pct": 4
     },
     "impressions": {
-      "current": 22606,
-      "previous": 22399,
-      "pct": 1
+      "current": 19028,
+      "previous": 22606,
+      "pct": -16
     },
     "membersReached": {
-      "current": 10115,
-      "previous": 10595,
-      "pct": -5
+      "current": 14772,
+      "previous": 10115,
+      "pct": 46
     },
     "followers": {
-      "gained": 35,
-      "total": 12952,
-      "pct": 0
+      "gained": 73,
+      "total": 13020,
+      "pct": 109
     },
-    "posts": 12,
-    "weeklyGoal": 187,
+    "posts": 7,
+    "weeklyGoal": 175,
     "topPosts": [
       {
-        "preview": "After being fired from my job, for weeks I would scroll through job postings every single day. I had run a group of offices with $150 million in revenue. Then came the drive through Morristown, the PSE&G workers on the side of the road, and the conversation in the car that changed everything.",
-        "reactions": 52,
-        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7475247612170842114-au7g"
+        "preview": "#MindsetShift #EntrepreneurLife #BuildingABusiness — Jul 4 post",
+        "reactions": 161,
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7479248274823086080-_RCM"
       },
       {
-        "preview": "I spent years helping people build their careers. Calls made on their behalf, doors opened, time given that I was never getting paid to give. They scattered like rats when you flick the light switch on.",
-        "reactions": 47,
-        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7473797430015152128-RkSE"
-      },
-      {
-        "preview": "The hardest lesson I can talk about right now is one I'm currently living through. I believe most people quit on things right before they're about to work — right when the pressure is highest and quitting feels most reasonable.",
+        "preview": "#EliteConsultingPartners #EntrepreneurLife — Jul 2 post",
         "reactions": 17,
-        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7476696316212076545-liAj"
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_eliteconsultingpartners-entrepreneurlife-share-7478520795649036288-6Abg"
+      },
+      {
+        "preview": "#ApexPredatorRacing #Ferrari — Frank LaRosa Jul 1 post",
+        "reactions": 8,
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_apexpredatorracing-franklarosa-ferrari-ugcPost-7478086295236292608-prH2"
       }
     ]
   },
@@ -139,6 +139,13 @@
       "reactions": 5,
       "engagements": 178,
       "followersGained": 35
+    },
+    {
+      "weekOf": "July 1, 2026",
+      "comments": 0,
+      "reactions": 0,
+      "engagements": 185,
+      "followersGained": 73
     }
   ]
 }
