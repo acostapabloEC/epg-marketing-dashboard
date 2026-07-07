@@ -315,8 +315,8 @@ export default function App() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
             <YoYCard month="March"  accent={GOLD}                        eng25="357"  eng26="591"  engPct={66}   impr25="—"    impr26="46K"  imprPct={null} />
             <YoYCard month="April"  accent={GOLD}                        eng25="440"  eng26="419"  engPct={-5}   impr25="30K"  impr26="37K"  imprPct={23}   />
-            <YoYCard month="May"    accent={BLUE}                        eng25="497"  eng26="169"  engPct={-66}  impr25="29K"  impr26="16K"  imprPct={-45}  live />
-            <YoYCard month="June"   accent="rgba(255,255,255,0.08)"      eng25="354"  eng26={null} engPct={null} impr25="20K"  impr26={null} imprPct={null} />
+            <YoYCard month="May"    accent={BLUE}                        eng25="497"  eng26="169"  engPct={-66}  impr25="29K"  impr26="16K"  imprPct={-45} />
+            <YoYCard month="June"   accent={BLUE}                        eng25="354"  eng26="736"  engPct={108}  impr25="20K"  impr26={null} imprPct={null} />
             <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={185}  engPct={-42}  impr25="22K"  impr26="19K"  imprPct={-14} live />
             <YoYCard month="August" accent="rgba(255,255,255,0.08)"      eng25="346"  eng26={null} engPct={null} impr25="32K"  impr26={null} imprPct={null} />
           </div>
