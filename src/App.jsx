@@ -34,8 +34,8 @@ const weeklyData = [
   { week: "Jun 22", engagements: 208, impressions: 27499, posts: 15 },
   { week: "Jun 29", engagements: 183, impressions: 22399, posts: 15 },
   { week: "Jun 28", engagements: 178, impressions: 22606, posts: 12 },
-  { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7  },
-  { week: "Jul 07", engagements: 175, impressions: 23368, posts: 7  },
+  { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7, followers: 73 },
+  { week: "Jul 07", engagements: 175, impressions: 23368, posts: 7, followers: 37 },
 ];
 
 const monthlyData = [
@@ -53,6 +53,23 @@ const topPosts = [
   { date: "Jul 07", engagements: 16, impressions: 1403,  format: "Status", preview: "I was 40 years old, sitting in my basement in New Jersey, cold-calling from a $125 desk I bought at Staples. 18 months earlier I had been a managing director running $150 million in revenue." },
   { date: "Jul 08", engagements: 12, impressions: 1134,  format: "Status", preview: "If you want to be happy for a week, go on vacation. If you want to be happy for a lifetime, build something you believe in." },
 ];
+
+// ── Derived from data arrays — update by editing weeklyData / monthlyData ──
+const DATA_YEAR      = 2026;
+const TOTAL_FOLLOWERS = 13045;
+const MONTHLY_GOALS  = { Jan:750, Feb:750, Mar:750, Apr:750, May:700, Jun:800, Jul:700, Aug:700, Sep:700 };
+
+const latestWeek  = weeklyData[weeklyData.length - 1];
+const prevWeek    = weeklyData[weeklyData.length - 2];
+const latestMonth = monthlyData[monthlyData.length - 1];
+
+const _wStartDay     = parseInt(latestWeek.week.split(" ")[1]);
+const _wMon          = latestWeek.week.split(" ")[0];
+const _wEndDay       = _wStartDay + 6;
+const weekLabel      = `${_wMon} ${_wStartDay}–${_wEndDay}`;
+const dateRangeLabel = `Jan – ${_wMon} ${_wEndDay}, ${DATA_YEAR}`;
+
+function fmtK(n) { return n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n); }
 
 const formatColors = { Photo: "#3fb950", Link: "#c9a84c", Status: "#58a6ff", Video: "#f85149" };
 
@@ -163,11 +180,11 @@ const ORANGE_DIM = "rgba(249,115,22,0.12)";
 export default function App() {
   const outbound = liveData.outbound || { comments: 0, reactions: 0, activity: [] };
   const history  = liveData.history  || [];
-  const engMoM  = Math.round(((175 - 185) / 185) * 100);
-  const imprMoM = Math.round(((23368 - 19028) / 19028) * 100);
-  const follMoM = Math.round(((37 - 73) / 73) * 100);
-  const julEng  = 360;
-  const julGoal = 700;
+  const engMoM  = Math.round(((latestWeek.engagements - prevWeek.engagements) / prevWeek.engagements) * 100);
+  const imprMoM = Math.round(((latestWeek.impressions - prevWeek.impressions) / prevWeek.impressions) * 100);
+  const follMoM = Math.round(((latestWeek.followers   - prevWeek.followers)   / prevWeek.followers)   * 100);
+  const julEng  = latestMonth.engagements;
+  const julGoal = MONTHLY_GOALS[latestMonth.month] ?? 700;
   const julPct  = Math.round((julEng / julGoal) * 100);
   const maxFmtEng = Math.max(...formatMix.map(f => f.avgEng));
 
@@ -188,11 +205,11 @@ export default function App() {
           <div style={{ width: 36, height: 36, background: GOLD, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#0a0f1e" }}>E</div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Elite Partners Group — Marketing Performance</div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Jul 13, 2026</div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · {dateRangeLabel}</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Jul 13, 2026</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>{dateRangeLabel}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: MUTED }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
             Live Dashboard
@@ -213,8 +230,8 @@ export default function App() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>Jul Wk 1–2 · in progress</div>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: julPct >= 50 ? GREEN : RED }}>{julEng} / 700</div>
+              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>{latestMonth.month} · in progress</div>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: julPct >= 50 ? GREEN : RED }}>{julEng} / {julGoal}</div>
               <div style={{ fontSize: 10, color: MUTED }}>{julPct}% of goal · in progress</div>
             </div>
             {[{ label: "Jul Goal", val: "700" }, { label: "Aug Goal", val: "700" }].map((g) => (
@@ -228,10 +245,10 @@ export default function App() {
 
         {/* ROW 1: KPI CARDS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 20 }}>
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (Jul 7–13)" value="175" delta={engMoM} deltaLabel="vs prior week (185)" accent={GOLD} large />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (Jul 7–13)" value="23.4K" delta={imprMoM} deltaLabel="vs prior week (19.0K)" accent={BLUE} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (Jul 7–13)" value="37" delta={follMoM} deltaLabel="vs prior week (73)" accent={GREEN} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="13,045" accent={PURPLE} sub="As of Jul 13, 2026" />
+          <KpiCard source="LinkedIn · Frank LaRosa" label={`Total Engagements (${weekLabel})`} value={latestWeek.engagements.toString()} delta={engMoM} deltaLabel={`vs prior week (${prevWeek.engagements})`} accent={GOLD} large />
+          <KpiCard source="LinkedIn · Frank LaRosa" label={`Total Impressions (${weekLabel})`} value={fmtK(latestWeek.impressions)} delta={imprMoM} deltaLabel={`vs prior week (${fmtK(prevWeek.impressions)})`} accent={BLUE} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label={`New Followers (${weekLabel})`} value={latestWeek.followers.toString()} delta={follMoM} deltaLabel={`vs prior week (${prevWeek.followers})`} accent={GREEN} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value={TOTAL_FOLLOWERS.toLocaleString()} accent={PURPLE} sub={`As of ${_wMon} ${_wEndDay}, ${DATA_YEAR}`} />
         </div>
 
         {/* ROW 2: CHARTS */}
@@ -298,8 +315,8 @@ export default function App() {
             </ResponsiveContainer>
             <div style={{ marginTop: 14, padding: "12px 14px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, color: GOLD }}>Jul (Wk 1–2 · in progress)</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{julEng} / 700</span>
+                <span style={{ fontSize: 11, color: GOLD }}>{latestMonth.month} (in progress)</span>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{julEng} / {julGoal}</span>
               </div>
               <div style={{ height: 6, background: "rgba(255,255,255,0.07)", borderRadius: 3, overflow: "hidden" }}>
                 <div style={{ height: "100%", width: `${Math.min(julPct, 100)}%`, background: julPct >= 50 ? GREEN : GOLD, borderRadius: 3 }} />
