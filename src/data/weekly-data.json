@@ -1,44 +1,44 @@
 {
-  "updatedAt": "2026-07-06",
-  "weekOf": "July 1, 2026",
+  "updatedAt": "2026-07-13",
+  "weekOf": "July 7, 2026",
   "linkedin": {
     "engagements": {
-      "current": 185,
-      "previous": 178,
-      "pct": 4
+      "current": 175,
+      "previous": 185,
+      "pct": -5
     },
     "impressions": {
-      "current": 19028,
-      "previous": 22606,
-      "pct": -16
+      "current": 23368,
+      "previous": 19028,
+      "pct": 23
     },
     "membersReached": {
-      "current": 14772,
-      "previous": 10115,
-      "pct": 46
+      "current": 11625,
+      "previous": 14772,
+      "pct": -21
     },
     "followers": {
-      "gained": 73,
-      "total": 13020,
-      "pct": 109
+      "gained": 37,
+      "total": 13045,
+      "pct": -49
     },
     "posts": 7,
     "weeklyGoal": 175,
     "topPosts": [
       {
+        "preview": "30 years of marriage. 30 years of partnership. 30 years of building something together.",
+        "reactions": 27,
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_30yearsofmarriage-mindsetshift-entrepreneurlife-share-7482147423306412033-yCTr"
+      },
+      {
         "preview": "I was 40 years old, sitting in my basement in New Jersey, cold-calling from a $125 desk I bought at Staples. 18 months earlier I had been a managing director running $150 million in revenue.",
-        "reactions": 161,
-        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7479248274823086080-_RCM"
+        "reactions": 16,
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_mindsetshift-entrepreneurlife-buildingabusiness-share-7480376772543528960-RsY3"
       },
       {
-        "preview": "15 years ago I started this company from a desk in my basement. I had just lost my job. My accounts were frozen, my deferred money was gone, and I had 18 months ahead of me where I couldn't pay my mortgage.",
-        "reactions": 17,
-        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_eliteconsultingpartners-entrepreneurlife-share-7478520795649036288-6Abg"
-      },
-      {
-        "preview": "When you start the 296 by just hitting the button it fires up in EV mode. It hums. Quietly. Almost politely. Nobody does that. You soft touch the button so the car turns on without fully starting.",
-        "reactions": 8,
-        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_apexpredatorracing-franklarosa-ferrari-ugcPost-7478086295236292608-prH2"
+        "preview": "If you want to be happy for a week, go on vacation. If you want to be happy for a lifetime, build something you believe in.",
+        "reactions": 12,
+        "url": "https://www.linkedin.com/posts/eliteceo-franklarosa_if-you-want-to-be-happy-for-a-week-go-on-ugcPost-7480735508617269248-8DAZ"
       }
     ]
   },
@@ -146,6 +146,13 @@
       "reactions": 0,
       "engagements": 185,
       "followersGained": 73
+    },
+    {
+      "weekOf": "July 7, 2026",
+      "comments": 0,
+      "reactions": 0,
+      "engagements": 175,
+      "followersGained": 37
     }
   ]
 }
