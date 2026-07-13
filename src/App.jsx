@@ -35,6 +35,7 @@ const weeklyData = [
   { week: "Jun 29", engagements: 183, impressions: 22399, posts: 15 },
   { week: "Jun 28", engagements: 178, impressions: 22606, posts: 12 },
   { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7  },
+  { week: "Jul 07", engagements: 175, impressions: 23368, posts: 7  },
 ];
 
 const monthlyData = [
@@ -44,13 +45,13 @@ const monthlyData = [
   { month: "Apr",  engagements: 419, goal: 750 },
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 636, goal: 800 },
-  { month: "Jul",  engagements: 185, goal: 700 },
+  { month: "Jul",  engagements: 360, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Jul 04", engagements: 161, impressions: 17924, format: "Status", preview: "I was 40 years old, sitting in my basement in New Jersey, cold-calling from a $125 desk I bought at Staples. 18 months earlier I had been a managing director running $150 million in revenue." },
-  { date: "Jul 02", engagements: 17,  impressions: 765,   format: "Status", preview: "15 years ago I started this company from a desk in my basement. I had just lost my job. My accounts were frozen, my deferred money was gone, and I had 18 months ahead of me where I couldn't pay my mortgage." },
-  { date: "Jul 01", engagements: 8,   impressions: 1221,  format: "Status", preview: "When you start the 296 by just hitting the button it fires up in EV mode. It hums. Quietly. Almost politely. Nobody does that. You soft touch the button so the car turns on without fully starting." },
+  { date: "Jul 12", engagements: 27, impressions: 2210,  format: "Status", preview: "30 years of marriage. 30 years of partnership. 30 years of building something together." },
+  { date: "Jul 07", engagements: 16, impressions: 1403,  format: "Status", preview: "I was 40 years old, sitting in my basement in New Jersey, cold-calling from a $125 desk I bought at Staples. 18 months earlier I had been a managing director running $150 million in revenue." },
+  { date: "Jul 08", engagements: 12, impressions: 1134,  format: "Status", preview: "If you want to be happy for a week, go on vacation. If you want to be happy for a lifetime, build something you believe in." },
 ];
 
 const formatColors = { Photo: "#3fb950", Link: "#c9a84c", Status: "#58a6ff", Video: "#f85149" };
@@ -162,12 +163,12 @@ const ORANGE_DIM = "rgba(249,115,22,0.12)";
 export default function App() {
   const outbound = liveData.outbound || { comments: 0, reactions: 0, activity: [] };
   const history  = liveData.history  || [];
-  const engMoM  = Math.round(((185 - 636) / 636) * 100);
-  const imprMoM = Math.round(((19028 - 77878) / 77878) * 100);
-  const follMoM = Math.round(((73 - 161) / 161) * 100);
-  const mayEng  = 636;
-  const mayGoal = 800;
-  const mayPct  = Math.round((mayEng / mayGoal) * 100);
+  const engMoM  = Math.round(((175 - 185) / 185) * 100);
+  const imprMoM = Math.round(((23368 - 19028) / 19028) * 100);
+  const follMoM = Math.round(((37 - 73) / 73) * 100);
+  const julEng  = 360;
+  const julGoal = 700;
+  const julPct  = Math.round((julEng / julGoal) * 100);
   const maxFmtEng = Math.max(...formatMix.map(f => f.avgEng));
 
   return (
@@ -187,11 +188,11 @@ export default function App() {
           <div style={{ width: 36, height: 36, background: GOLD, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#0a0f1e" }}>E</div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Elite Partners Group — Marketing Performance</div>
-            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Jul 5, 2026</div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Frank LaRosa · LinkedIn · Jan – Jul 13, 2026</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Jul 5, 2026</div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", background: GOLD_DIM, color: GOLD, padding: "5px 12px", borderRadius: 6, border: `1px solid rgba(201,168,76,0.2)` }}>Jan – Jul 13, 2026</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: MUTED }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN, animation: "pulse 2s infinite" }} />
             Live Dashboard
@@ -205,18 +206,18 @@ export default function App() {
         {/* Q2 GOAL BANNER */}
         <div style={{ background: "linear-gradient(135deg, #1a1600 0%, #0f1208 100%)", border: `1px solid rgba(201,168,76,0.25)`, borderRadius: 12, padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ fontSize: 13, color: GOLD, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>Q2 Goal — Frank LinkedIn Engagements</div>
+            <div style={{ fontSize: 13, color: GOLD, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>Q3 Goal — Frank LinkedIn Engagements</div>
             <div style={{ fontSize: 13, color: MUTED }}>
               Target: <span style={{ color: "#f0f6fc", fontWeight: 600 }}>2,250</span> total · Weekly: <span style={{ color: "#f0f6fc", fontWeight: 600 }}>187</span>
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>Jun Final · Jul in progress</div>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: mayPct >= 50 ? GREEN : RED }}>{mayEng} / 800</div>
-              <div style={{ fontSize: 10, color: MUTED }}>{mayPct}% of goal · final</div>
+              <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>Jul Wk 1–2 · in progress</div>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: julPct >= 50 ? GREEN : RED }}>{julEng} / 700</div>
+              <div style={{ fontSize: 10, color: MUTED }}>{julPct}% of goal · in progress</div>
             </div>
-            {[{ label: "Jun Goal", val: "800" }, { label: "Jul Goal", val: "700" }].map((g) => (
+            {[{ label: "Jul Goal", val: "700" }, { label: "Aug Goal", val: "700" }].map((g) => (
               <div key={g.label} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>{g.label}</div>
                 <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: GOLD }}>{g.val}</div>
@@ -227,10 +228,10 @@ export default function App() {
 
         {/* ROW 1: KPI CARDS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 20 }}>
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (July, thru 5)" value="185" delta={engMoM} deltaLabel="vs Jun (636)" accent={GOLD} large />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (July, thru 5)" value="19.0K" delta={imprMoM} deltaLabel="vs Jun (77.9K)" accent={BLUE} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (July, thru 5)" value="73" delta={follMoM} deltaLabel="vs Jun (161)" accent={GREEN} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="13,020" accent={PURPLE} sub="As of Jul 5, 2026" />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Engagements (Jul 7–13)" value="175" delta={engMoM} deltaLabel="vs prior week (185)" accent={GOLD} large />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Impressions (Jul 7–13)" value="23.4K" delta={imprMoM} deltaLabel="vs prior week (19.0K)" accent={BLUE} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="New Followers (Jul 7–13)" value="37" delta={follMoM} deltaLabel="vs prior week (73)" accent={GREEN} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value="13,045" accent={PURPLE} sub="As of Jul 13, 2026" />
         </div>
 
         {/* ROW 2: CHARTS */}
@@ -297,13 +298,13 @@ export default function App() {
             </ResponsiveContainer>
             <div style={{ marginTop: 14, padding: "12px 14px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, color: GOLD }}>Jun Final (thru Jun 28)</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{mayEng} / 800</span>
+                <span style={{ fontSize: 11, color: GOLD }}>Jul (Wk 1–2 · in progress)</span>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: GOLD }}>{julEng} / 700</span>
               </div>
               <div style={{ height: 6, background: "rgba(255,255,255,0.07)", borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${Math.min(mayPct, 100)}%`, background: mayPct >= 50 ? GREEN : GOLD, borderRadius: 3 }} />
+                <div style={{ height: "100%", width: `${Math.min(julPct, 100)}%`, background: julPct >= 50 ? GREEN : GOLD, borderRadius: 3 }} />
               </div>
-              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{mayPct}% of monthly goal · Jun final</div>
+              <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>{julPct}% of monthly goal · in progress</div>
             </div>
           </div>
         </div>
@@ -317,7 +318,7 @@ export default function App() {
             <YoYCard month="April"  accent={GOLD}                        eng25="440"  eng26="419"  engPct={-5}   impr25="30K"  impr26="37K"  imprPct={23}   />
             <YoYCard month="May"    accent={BLUE}                        eng25="497"  eng26="169"  engPct={-66}  impr25="29K"  impr26="16K"  imprPct={-45} />
             <YoYCard month="June"   accent={BLUE}                        eng25="354"  eng26="736"  engPct={108}  impr25="20K"  impr26={null} imprPct={null} />
-            <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={185}  engPct={-42}  impr25="22K"  impr26="19K"  imprPct={-14} live />
+            <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={360}  engPct={13}   impr25="22K"  impr26="42K"  imprPct={91}  live />
             <YoYCard month="August" accent="rgba(255,255,255,0.08)"      eng25="346"  eng26={null} engPct={null} impr25="32K"  impr26={null} imprPct={null} />
           </div>
         </div>
@@ -463,7 +464,7 @@ export default function App() {
       <div style={{ borderTop: `1px solid ${BORDER}`, padding: "12px 32px", display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: 10, color: MUTED, marginTop: 24 }}>
         <span>Elite Partners Group · Marketing Dashboard · Frank LaRosa LinkedIn</span>
         <span>Source: LinkedIn Analytics Export · Apr 29, 2025 – May 25, 2026</span>
-        <span>Q2 Goals: Apr 750 · May 700 · Jun 800 · Weekly: 187</span>
+        <span>Q3 Goals: Jul 700 · Aug 700 · Sep 700 · Weekly: 175</span>
       </div>
     </div>
   );
