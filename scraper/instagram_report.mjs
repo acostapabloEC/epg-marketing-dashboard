@@ -196,6 +196,40 @@ async function parseDailyRows(xlsxPath) {
   return daily;
 }
 
+async function parseTopPosts(xlsxPath, start, end, limit = 3) {
+  const XLSX = (await import('xlsx')).default;
+  const wb = XLSX.readFile(xlsxPath);
+  const ws = wb.Sheets['IG - Posts table'];
+  if (!ws) return [];
+  const rows = XLSX.utils.sheet_to_json(ws, { raw: false });
+  const startD = new Date(start + 'T00:00:00Z');
+  const endD = new Date(end + 'T23:59:59Z');
+
+  return rows
+    .map(r => {
+      const raw = r['Date (GMT)'] || '';
+      const d = new Date(raw.replace(' ', 'T') + 'Z');
+      return { r, d };
+    })
+    .filter(({ d }) => !isNaN(d) && d >= startD && d <= endD)
+    .map(({ r, d }) => ({
+      postId: r['Instagram Post ID'],
+      date: d.toISOString().slice(0, 10),
+      type: r['Post Type'],
+      caption: r['Post Message'] || '',
+      likes: toNum(r['Likes']),
+      comments: toNum(r['Comments']),
+      shares: toNum(r['Shares']),
+      saves: toNum(r['Saves']),
+      views: toNum(r['Views']),
+      reach: toNum(r['Reach']),
+      engagement: toNum(r['Engagement']),
+      engRate: parseFloat(r['Engagement rate']) || 0,
+    }))
+    .sort((a, b) => b.engagement - a.engagement)
+    .slice(0, limit);
+}
+
 function findLatestDownloadedExport() {
   const files = readdirSync(DOWNLOAD_DIR)
     .filter(f => /^instagram_engagement_\d{4}-\d{2}-\d{2}\.xlsx$/.test(f))
@@ -235,24 +269,28 @@ function sumRange(archive, start, end) {
 
 async function main() {
   let archive = loadArchive();
+  let xlsxPath;
 
   if (!noScrape) {
-    const xlsxPath = await scrapeInstagramReport();
+    xlsxPath = await scrapeInstagramReport();
     const daily = await parseDailyRows(xlsxPath);
     archive = { ...archive, ...daily };
     saveArchive(archive);
-  } else if (Object.keys(archive).length === 0) {
-    const latest = findLatestDownloadedExport();
-    if (!latest) throw new Error('No archive and no existing export in hootsuite-downloads/ to seed from — run without --no-scrape first.');
-    console.log(`No archive yet — seeding from ${latest}`);
-    archive = await parseDailyRows(latest);
-    saveArchive(archive);
+  } else {
+    xlsxPath = findLatestDownloadedExport();
+    if (!xlsxPath) throw new Error('No existing export in hootsuite-downloads/ to read from — run without --no-scrape first.');
+    if (Object.keys(archive).length === 0) {
+      console.log(`No archive yet — seeding from ${xlsxPath}`);
+      archive = await parseDailyRows(xlsxPath);
+      saveArchive(archive);
+    }
   }
 
   const { totals, foundDays, missing } = sumRange(archive, startDate, endDate);
+  const topPosts = await parseTopPosts(xlsxPath, startDate, endDate);
 
   if (jsonMode) {
-    process.stdout.write(JSON.stringify({ startDate, endDate, ...totals, daysFound: foundDays.length, missingDays: missing }) + '\n');
+    process.stdout.write(JSON.stringify({ startDate, endDate, ...totals, daysFound: foundDays.length, missingDays: missing, topPosts }) + '\n');
     return;
   }
 
@@ -263,6 +301,10 @@ async function main() {
   console.log(`  Comments:   ${totals.comments}`);
   console.log(`  Saves:      ${totals.saves}`);
   console.log(`  Shares:     ${totals.shares}`);
+  console.log(`  Top posts this week: ${topPosts.length}`);
+  for (const p of topPosts) {
+    console.log(`    ${p.date} [${p.type}] eng=${p.engagement} views=${p.views} — ${p.caption.slice(0, 60)}`);
+  }
   if (missing.length) {
     console.warn(`\n⚠ No archived data for: ${missing.join(', ')}`);
     console.warn('  Hootsuite\'s report only shows month-to-date, so once a month ends its days');
