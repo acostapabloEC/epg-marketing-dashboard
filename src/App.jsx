@@ -35,7 +35,7 @@ const weeklyData = [
   { week: "Jun 29", engagements: 183, impressions: 22399, posts: 15 },
   { week: "Jun 28", engagements: 178, impressions: 22606, posts: 12 },
   { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7, followers: 73 },
-  { week: "Jul 07", engagements: 175, impressions: 23368, posts: 7, followers: 37 },
+  { week: "Jul 06", engagements: 220, impressions: 32756, posts: 13, followers: 74 },
 ];
 
 const monthlyData = [
@@ -45,18 +45,18 @@ const monthlyData = [
   { month: "Apr",  engagements: 419, goal: 750 },
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 636, goal: 800 },
-  { month: "Jul",  engagements: 360, goal: 700 },
+  { month: "Jul",  engagements: 405, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Jul 12", engagements: 27, impressions: 2210,  format: "Status", preview: "30 years of marriage. 30 years of partnership. 30 years of building something together." },
-  { date: "Jul 07", engagements: 16, impressions: 1403,  format: "Status", preview: "I was 40 years old, sitting in my basement in New Jersey, cold-calling from a $125 desk I bought at Staples. 18 months earlier I had been a managing director running $150 million in revenue." },
-  { date: "Jul 08", engagements: 12, impressions: 1134,  format: "Status", preview: "If you want to be happy for a week, go on vacation. If you want to be happy for a lifetime, build something you believe in." },
+  { date: "Jul 04", engagements: 114, impressions: 20271, format: "Status", preview: "I was 40 years old, sitting in my basement in New Jersey, cold-calling from a $125 desk I bought at Staples. 18 months earlier I had been a managing director running $150 million in revenue." },
+  { date: "Jul 07", engagements: 14,  impressions: 1385,  format: "Status", preview: "Back in the day, I was probably one of the youngest directors at my firm. I was the number 1 recruiter. I had a salary, a lifestyle, a position that made me feel like nothing could touch me." },
+  { date: "Jul 12", engagements: 14,  impressions: 1013,  format: "Status", preview: "I sold cars to put myself through college. Mitsubishis, Cherokees, whatever came through the lot. One afternoon a woman called in wanting to swap out her Volkswagen." },
 ];
 
 // ── Derived from data arrays — update by editing weeklyData / monthlyData ──
 const DATA_YEAR      = 2026;
-const TOTAL_FOLLOWERS = 13045;
+const TOTAL_FOLLOWERS = 13050;
 const MONTHLY_GOALS  = { Jan:750, Feb:750, Mar:750, Apr:750, May:700, Jun:800, Jul:700, Aug:700, Sep:700 };
 
 const latestWeek  = weeklyData[weeklyData.length - 1];
@@ -335,7 +335,7 @@ export default function App() {
             <YoYCard month="April"  accent={GOLD}                        eng25="440"  eng26="419"  engPct={-5}   impr25="30K"  impr26="37K"  imprPct={23}   />
             <YoYCard month="May"    accent={BLUE}                        eng25="497"  eng26="169"  engPct={-66}  impr25="29K"  impr26="16K"  imprPct={-45} />
             <YoYCard month="June"   accent={BLUE}                        eng25="354"  eng26="736"  engPct={108}  impr25="20K"  impr26={null} imprPct={null} />
-            <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={360}  engPct={13}   impr25="22K"  impr26="42K"  imprPct={91}  live />
+            <YoYCard month="July"   accent="rgba(255,255,255,0.08)"      eng25="319"  eng26={405}  engPct={27}   impr25="22K"  impr26="42K"  imprPct={91}  live />
             <YoYCard month="August" accent="rgba(255,255,255,0.08)"      eng25="346"  eng26={null} engPct={null} impr25="32K"  impr26={null} imprPct={null} />
           </div>
         </div>
