@@ -31,9 +31,8 @@ const weeklyData = [
   { week: "Jun 01", engagements: 83,  impressions: 14931, posts: 10 },
   { week: "Jun 08", engagements: 12,  impressions: 1392,  posts: 2  },
   { week: "Jun 15", engagements: 167, impressions: 14854, posts: 15 },
-  { week: "Jun 22", engagements: 208, impressions: 27499, posts: 15 },
-  { week: "Jun 29", engagements: 183, impressions: 22399, posts: 15 },
-  { week: "Jun 28", engagements: 178, impressions: 22606, posts: 12 },
+  { week: "Jun 22", engagements: 178, impressions: 22609, posts: 11, followers: 35 },
+  { week: "Jun 29", engagements: 36,  impressions: 5107,  posts: 3,  followers: 15 },
   { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7, followers: 73 },
   { week: "Jul 06", engagements: 220, impressions: 32756, posts: 13, followers: 74 },
 ];
@@ -44,7 +43,7 @@ const monthlyData = [
   { month: "Mar",  engagements: 591, goal: 750 },
   { month: "Apr",  engagements: 419, goal: 750 },
   { month: "May",  engagements: 212, goal: 700 },
-  { month: "Jun",  engagements: 636, goal: 800 },
+  { month: "Jun",  engagements: 476, goal: 800 },
   { month: "Jul",  engagements: 405, goal: 700 },
 ];
 
