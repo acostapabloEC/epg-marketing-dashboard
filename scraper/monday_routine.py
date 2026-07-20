@@ -122,10 +122,12 @@ if app_jsx_path.exists():
 
     top_posts_match = re.search(r"const topPosts\s*=\s*\[([\s\S]*?)\n\];", app_jsx_text)
     if top_posts_match:
-        post_pattern = re.compile(r'date:\s*"([^"]+)",\s*engagements:\s*(\d+),\s*impressions:\s*(\d+)')
+        post_pattern = re.compile(
+            r'date:\s*"([^"]+)",\s*engagements:\s*(\d+),\s*impressions:\s*(\d+),\s*format:\s*"[^"]*",\s*preview:\s*"((?:[^"\\]|\\.)*)"'
+        )
         li["top_posts"] = [
-            {"date": d, "engagements": int(e), "impressions": int(i)}
-            for d, e, i in post_pattern.findall(top_posts_match.group(1))
+            {"date": d, "engagements": int(e), "impressions": int(i), "preview": p.replace('\\"', '"')}
+            for d, e, i, p in post_pattern.findall(top_posts_match.group(1))
         ]
 
     log(f"  LinkedIn: {li['engagements']} eng, {li['impressions']} impressions")
