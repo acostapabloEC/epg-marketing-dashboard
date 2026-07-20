@@ -35,6 +35,7 @@ const weeklyData = [
   { week: "Jun 29", engagements: 36,  impressions: 5107,  posts: 3,  followers: 15 },
   { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7, followers: 73 },
   { week: "Jul 06", engagements: 220, impressions: 32756, posts: 13, followers: 74 },
+  { week: "Jul 13", engagements: 250, impressions: 32643, posts: 10, followers: 54 },
 ];
 
 const monthlyData = [
@@ -44,18 +45,18 @@ const monthlyData = [
   { month: "Apr",  engagements: 419, goal: 750 },
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 476, goal: 800 },
-  { month: "Jul",  engagements: 405, goal: 700 },
+  { month: "Jul",  engagements: 655, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Jul 04", engagements: 114, impressions: 20271, format: "Status", preview: "I was 40 years old, sitting in my basement in New Jersey, cold-calling from a $125 desk I bought at Staples. 18 months earlier I had been a managing director running $150 million in revenue." },
-  { date: "Jul 07", engagements: 14,  impressions: 1385,  format: "Status", preview: "Back in the day, I was probably one of the youngest directors at my firm. I was the number 1 recruiter. I had a salary, a lifestyle, a position that made me feel like nothing could touch me." },
-  { date: "Jul 12", engagements: 14,  impressions: 1013,  format: "Status", preview: "I sold cars to put myself through college. Mitsubishis, Cherokees, whatever came through the lot. One afternoon a woman called in wanting to swap out her Volkswagen." },
+  { date: "Jul 16", engagements: 40, impressions: 5345, format: "Status", preview: "" },
+  { date: "Jul 13", engagements: 39, impressions: 6963, format: "Status", preview: "" },
+  { date: "Jul 14", engagements: 17, impressions: 1683, format: "Status", preview: "" },
 ];
 
 // ── Derived from data arrays — update by editing weeklyData / monthlyData ──
 const DATA_YEAR      = 2026;
-const TOTAL_FOLLOWERS = 13050;
+const TOTAL_FOLLOWERS = 13062;
 const MONTHLY_GOALS  = { Jan:750, Feb:750, Mar:750, Apr:750, May:700, Jun:800, Jul:700, Aug:700, Sep:700 };
 
 const latestWeek  = weeklyData[weeklyData.length - 1];
