@@ -109,9 +109,25 @@ async function scrapeInstagramReport() {
     };
     page.on('response', responseHandler);
 
+    const dismissPendoGuide = async () => {
+      const pendoBase = page.locator('#pendo-base');
+      if (await pendoBase.count() === 0) return;
+      await page.keyboard.press('Escape').catch(() => {});
+      await page.waitForTimeout(300);
+      const closeBtn = pendoBase.locator('button[aria-label="Close"], ._pendo-close-guide, [class*="pendo-close"]').first();
+      if (await closeBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await closeBtn.click().catch(() => {});
+        await page.waitForTimeout(300);
+      }
+    };
+    await dismissPendoGuide();
+
     const exportBtn = page.locator('button:has-text("Export")').first();
     await exportBtn.waitFor({ state: 'visible', timeout: 10000 });
-    await exportBtn.click();
+    // Hootsuite's Pendo onboarding backdrop can still cover the button even after
+    // the dismiss attempt above (observed 2026-07-20) — force bypasses the
+    // pointer-interception actionability check and clicks the real element directly.
+    await exportBtn.click({ force: true });
     await page.waitForTimeout(1500);
 
     const allEls = await page.locator('button, div, span, li').all();
