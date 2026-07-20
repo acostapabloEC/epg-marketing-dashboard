@@ -22,7 +22,8 @@
  * aggregated" for each metric, rather than trusting a fixed name.
  */
 import { chromium } from 'playwright';
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'fs';
+import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -55,8 +56,27 @@ if (!startDate || !endDate) {
   process.exit(1);
 }
 
+// A prior run that crashed or got killed (e.g. hit the 5-minute login timeout while
+// unattended) can leave its Edge process and profile lockfile behind. Since this script
+// is the only thing that ever opens PROFILE, anything still holding it at startup is
+// necessarily stale — clear it so a Monday-morning run isn't blocked before it starts.
+function cleanupStaleProfileLock() {
+  try {
+    const escaped = PROFILE.replace(/\\/g, '\\\\').replace(/'/g, "''");
+    execSync(
+      `powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \\"Name='msedge.exe'\\" | Where-Object { $_.CommandLine -like '*${escaped}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"`,
+      { stdio: 'ignore' }
+    );
+  } catch { /* best-effort cleanup — real errors still surface from launchPersistentContext below */ }
+  const lockPath = path.join(PROFILE, 'lockfile');
+  if (existsSync(lockPath)) {
+    try { unlinkSync(lockPath); } catch { /* still held by something else; let the real error surface */ }
+  }
+}
+
 async function scrapeInstagramReport() {
   console.log('Launching Edge...');
+  cleanupStaleProfileLock();
   const context = await chromium.launchPersistentContext(PROFILE, {
     channel: 'msedge',
     headless: false,
