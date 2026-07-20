@@ -447,11 +447,12 @@ export default function App() {
                     <AreaChart data={history} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
                       <XAxis dataKey="weekOf" tick={{ fill: MUTED, fontSize: 9 }} axisLine={false} tickLine={false} tickFormatter={w => w.split(" ").slice(0,2).join(" ")} />
-                      <YAxis tick={{ fill: MUTED, fontSize: 9 }} axisLine={false} tickLine={false} />
+                      <YAxis yAxisId="left"  tick={{ fill: MUTED, fontSize: 9 }} axisLine={false} tickLine={false} />
+                      <YAxis yAxisId="right" orientation="right" tick={{ fill: MUTED, fontSize: 9 }} axisLine={false} tickLine={false} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Area type="monotone" dataKey="comments"    name="Comments"     stroke={ORANGE} strokeWidth={2} fill="rgba(249,115,22,0.1)" dot={false} />
-                      <Area type="monotone" dataKey="reactions"   name="Reactions"    stroke={GOLD}   strokeWidth={2} fill="rgba(201,168,76,0.1)" dot={false} />
-                      <Area type="monotone" dataKey="engagements" name="Engagements"  stroke={GREEN}  strokeWidth={2} fill="rgba(63,185,80,0.08)"  dot={false} />
+                      <Area yAxisId="left"  type="monotone" dataKey="comments"    name="Comments"     stroke={ORANGE} strokeWidth={2} fill="rgba(249,115,22,0.1)" dot={false} />
+                      <Area yAxisId="left"  type="monotone" dataKey="reactions"   name="Reactions"    stroke={GOLD}   strokeWidth={2} fill="rgba(201,168,76,0.1)" dot={false} />
+                      <Area yAxisId="right" type="monotone" dataKey="engagements" name="Engagements"  stroke={GREEN}  strokeWidth={2} fill="rgba(63,185,80,0.08)"  dot={false} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </>
