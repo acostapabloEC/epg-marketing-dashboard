@@ -6,7 +6,9 @@ Order of operations:
   1. Pull Simplecast podcast data (API)
   2. Read LinkedIn weekly numbers + top posts from the live dashboard (src/App.jsx)
   3. Read Instagram + YouTube weekly numbers via instagram_report.mjs / youtube_report.mjs
-     (--no-scrape — reuses each platform's own already-refreshed daily archive)
+     (both call the Hootsuite Analytics API live — no browser, no local archive; the
+     "--no-scrape" flag passed below is a harmless no-op left over from the pre-API
+     scraper versions, kept only because removing it isn't necessary)
   4. Read Google Reviews rating from the live dashboard
   5. Build newsletter HTML with send_newsletter.build_html() (the branded template)
   6. Save to epg-exec-form, deploy Vercel
@@ -135,17 +137,19 @@ else:
     log("  WARNING: App.jsx not found — LinkedIn numbers will be 0")
 
 
-# ── 4. Read Instagram + YouTube from the already-updated dashboards ──────────
+# ── 4. Read Instagram + YouTube from their canonical report scripts ──────────
 #
 # Do NOT re-parse raw Hootsuite exports here. instagram_report.mjs and
-# youtube_report.mjs are the canonical scripts for exact weekly totals — they
-# already handle Hootsuite reordering its Daily-vs-Overall columns between
-# runs, and they archive each day's data so an exact week stays computable
-# after a month boundary. --no-scrape reuses today's archive (already
-# refreshed this morning by the epg-instagram/youtube-weekly-update tasks)
-# instead of launching a second live browser scrape.
+# youtube_report.mjs are the canonical scripts for exact weekly totals — both
+# were rewritten 2026-07-20 to call the real Hootsuite Analytics API directly
+# (OAuth2, no browser), which takes an exact date range natively. There's no
+# local archive anymore and no rolling-export-window or column-reordering
+# problem at this layer (those were only ever issues with the old
+# Playwright-scraper versions). The "--no-scrape" flag passed below is a
+# harmless no-op leftover from that era — kept only because removing it
+# isn't necessary, not because it still does anything.
 
-log("Reading Instagram + YouTube report scripts (--no-scrape)...")
+log("Reading Instagram + YouTube report scripts...")
 start_str, end_str = week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
 prev_week_end = week_start - timedelta(days=1)
 prev_week_start = prev_week_end - timedelta(days=6)
@@ -163,7 +167,7 @@ def run_report(script, start, end):
 
 # build_html() falls back to hardcoded placeholder numbers (96 / 9700) for
 # prev-week comparisons if we don't supply real ones — always fetch last
-# week too (still --no-scrape, still just reading the archive) so a real
+# week too (a second live API call, same as the current week) so a real
 # week-over-week trend never gets silently replaced by a fake one.
 ig = {"engagements": 0, "views": 0, "likes": 0, "shares": 0, "saves": 0, "top_posts": [],
       "prev_engagements": 0, "prev_views": 0}
