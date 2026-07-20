@@ -4,15 +4,14 @@ Runs automatically every Monday at 9am via Windows Task Scheduler.
 
 Order of operations:
   1. Pull Simplecast podcast data (API)
-  2. Update LinkedIn top posts (top_posts.js — writes weekly-data.json directly)
-  3. Read LinkedIn weekly numbers from the live dashboard (src/App.jsx)
-  4. Read Instagram + YouTube weekly numbers via instagram_report.mjs / youtube_report.mjs
+  2. Read LinkedIn weekly numbers + top posts from the live dashboard (src/App.jsx)
+  3. Read Instagram + YouTube weekly numbers via instagram_report.mjs / youtube_report.mjs
      (--no-scrape — reuses each platform's own already-refreshed daily archive)
-  5. Read Google Reviews rating from the live dashboard
-  6. Build newsletter HTML with send_newsletter.build_html() (the branded template)
-  7. Save to epg-exec-form, deploy Vercel
-  8. Email Pablo with "Send to Brian" button, newsletter embedded for review
-  9. Carla's LinkedIn engagement report (carla_report.js — separate script, separate email)
+  4. Read Google Reviews rating from the live dashboard
+  5. Build newsletter HTML with send_newsletter.build_html() (the branded template)
+  6. Save to epg-exec-form, deploy Vercel
+  7. Email Pablo with "Send to Brian" button, newsletter embedded for review
+  8. Carla's LinkedIn engagement report (carla_report.js — separate script, separate email)
 
 Note: this script does NOT scrape or parse raw platform exports itself — every
 number comes from a platform's already-updated dashboard or its own canonical
@@ -61,20 +60,15 @@ pod = nl.fetch_simplecast_stats(
 log(f"  Podcast: {pod['downloads']} downloads")
 
 
-# ── 2b. Update LinkedIn top posts (independent of Carla's engagement report) ─
-
-log("Updating LinkedIn top posts...")
-top_posts_result = subprocess.run(
-    ["node", "top_posts.js", week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d"), "--write"],
-    cwd=str(SCRAPER_DIR), capture_output=True, text=True, encoding="utf-8", errors="replace", shell=True
-)
-if top_posts_result.returncode == 0:
-    log("  Top posts updated in weekly-data.json.")
-else:
-    log(f"  WARNING: top_posts.js failed — keeping existing topPosts. stderr: {top_posts_result.stderr[-300:]}")
-
-
 # ── 3. Read LinkedIn from App.jsx (the live dashboard — source of truth) ──────
+#
+# (Previously this step also ran `top_posts.js --write` — a live LinkedIn
+# browser scrape to fetch post preview text into weekly-data.json. Removed
+# 2026-07-20: it's a second live scrape on top of the one epg-linkedin-
+# weekly-update already did that morning, it wasn't reliably producing
+# preview text anyway, and this script doesn't read weekly-data.json's
+# topPosts — LinkedIn top posts come from App.jsx below, same as everything
+# else LinkedIn.)
 #
 # weekly-data.json's linkedin.engagements/impressions/followers/history fields
 # are NOT kept current: top_posts.js (step 2b above) only writes topPosts into
