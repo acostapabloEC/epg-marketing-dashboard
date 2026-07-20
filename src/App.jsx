@@ -35,7 +35,7 @@ const weeklyData = [
   { week: "Jun 29", engagements: 36,  impressions: 5107,  posts: 3,  followers: 15 },
   { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7, followers: 73 },
   { week: "Jul 06", engagements: 220, impressions: 32756, posts: 13, followers: 74 },
-  { week: "Jul 13", engagements: 250, impressions: 32643, posts: 10, followers: 54 },
+  { week: "Jul 13", engagements: 250, impressions: 32643, posts: 10, followers: 54, membersReached: 13463 },
 ];
 
 const monthlyData = [
