@@ -1,351 +1,151 @@
 /**
  * instagram_report.mjs
- * Pull Instagram engagement totals for an exact date range (e.g. a Mon-Sun week).
- * Usage: node instagram_report.mjs <startDate> <endDate> [--json] [--no-scrape]
+ * Pull Instagram engagement totals + top posts for an exact date range, via the
+ * Hootsuite Analytics API — not browser scraping.
+ * Usage: node instagram_report.mjs <startDate> <endDate> [--json]
  * Example: node instagram_report.mjs 2026-07-06 2026-07-12
  *
- * Hootsuite's saved Instagram report (id=18667698) has no custom date-range picker —
- * it always exports month-to-date-through-yesterday. Once a month ends, that month's
- * daily rows disappear from future exports. To keep exact weekly numbers available
- * after month rollover, every scrape merges its daily rows into a local archive at
- * data/instagram_daily_archive.json (keyed by date), so sums are computed from the
- * archive rather than from whatever window Hootsuite happens to show today.
+ * Rewritten 2026-07-20. Requires HOOTSUITE_CLIENT_ID/_CLIENT_SECRET/_ACCESS_TOKEN/
+ * _REFRESH_TOKEN in .env — run `node hootsuite_oauth.mjs` once first to set these up
+ * (needs the Advanced Analytics add-on + a Hootsuite Developer app with the
+ * analytics:read scope; see hootsuite_oauth.mjs's header comment).
  *
- * "Daily aggregated" vs "Overall aggregated" columns: the export has duplicate metric
- * names (e.g. two "Post views" columns) — one is a running/overall total, the other is
- * the per-day value. Only the per-day columns are safe to sum across days. CONFIRMED
- * BY TESTING: which of the two duplicate columns is "Daily" is NOT stable between
- * exports — Hootsuite reorders columns run to run, so a fixed key/suffix assumption
- * (e.g. "the _1 one is always Daily") silently reads the wrong column on some runs.
- * parseDailyRows() therefore reads row 1 (headers) + row 2 (aggregation-type labels)
- * together on every parse and picks whichever column is actually labeled "Daily
- * aggregated" for each metric, rather than trusting a fixed name.
+ * Replaces the old Playwright/browser-scraper version, which fought two structural
+ * problems: Hootsuite's Instagram export has no date-range picker (always
+ * month-to-date-through-yesterday, requiring a local archive to survive month
+ * rollover) and an unstable Daily-vs-Overall duplicate-column layout that silently
+ * corrupted a real month's data before it was caught. The Analytics API takes an
+ * exact date range natively and returns each metric once, under its own name —
+ * neither problem exists here.
+ *
+ * IMPORTANT METRIC GOTCHA (found validating this rewrite, still true of the API):
+ * POST /v1/analytics/profiles' daily engagement/views are NOT the same metric as
+ * "sum of this week's posts' engagement/views" — they read ~6-13x larger, some
+ * broader profile-level definition (closer to Instagram's own reach/impressions
+ * concept than to "views on posts you made"). Weekly eng/views/likes/etc totals
+ * MUST come from summing POST /v1/analytics/posts (per-post, filtered to posts
+ * created in the target range) — that's what reconciled with previously-validated
+ * numbers from the old scraper. Only new_followers_count is pulled from the
+ * profile-level endpoint, since no per-post equivalent exists for that metric.
+ * Don't "simplify" by switching eng/views to the profile endpoint.
  */
-import { chromium } from 'playwright';
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'fs';
-import { execSync } from 'child_process';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import 'dotenv/config';
+import { listSocialProfiles, listProfileMetrics, listPosts } from './hootsuite_api.mjs';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PROFILE = path.join(__dirname, 'hootsuite-profile');
-const DOWNLOAD_DIR = path.join(__dirname, 'hootsuite-downloads');
-const DATA_DIR = path.join(__dirname, 'data');
-const ARCHIVE_PATH = path.join(DATA_DIR, 'instagram_daily_archive.json');
-const REPORT_URL = 'https://hootsuite.com/dashboard#/analytics/report?id=18667698';
-const METRIC_LABELS = {
-  likes: 'Post likes',
-  views: 'Post views',
-  comments: 'Post comments',
-  saves: 'Post saves',
-  engagement: 'Post engagement',
-  shares: 'Post shares',
-};
-
-mkdirSync(DOWNLOAD_DIR, { recursive: true });
-mkdirSync(DATA_DIR, { recursive: true });
+const INSTAGRAM_USERNAME = 'franklarosa.elite';
 
 const rawArgs = process.argv.slice(2);
 const jsonMode = rawArgs.includes('--json');
-const noScrape = rawArgs.includes('--no-scrape');
 const args = rawArgs.filter(a => !a.startsWith('--'));
 const [startDate, endDate] = args;
 
 if (!startDate || !endDate) {
-  console.error('Usage: node instagram_report.mjs <startDate YYYY-MM-DD> <endDate YYYY-MM-DD> [--json] [--no-scrape]');
+  console.error('Usage: node instagram_report.mjs <startDate YYYY-MM-DD> <endDate YYYY-MM-DD> [--json]');
   process.exit(1);
 }
 
-// A prior run that crashed or got killed (e.g. hit the 5-minute login timeout while
-// unattended) can leave its Edge process and profile lockfile behind. Since this script
-// is the only thing that ever opens PROFILE, anything still holding it at startup is
-// necessarily stale — clear it so a Monday-morning run isn't blocked before it starts.
-function cleanupStaleProfileLock() {
-  try {
-    const escaped = PROFILE.replace(/\\/g, '\\\\').replace(/'/g, "''");
-    execSync(
-      `powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \\"Name='msedge.exe'\\" | Where-Object { $_.CommandLine -like '*${escaped}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"`,
-      { stdio: 'ignore' }
-    );
-  } catch { /* best-effort cleanup — real errors still surface from launchPersistentContext below */ }
-  const lockPath = path.join(PROFILE, 'lockfile');
-  if (existsSync(lockPath)) {
-    try { unlinkSync(lockPath); } catch { /* still held by something else; let the real error surface */ }
-  }
-}
-
-async function scrapeInstagramReport() {
-  console.log('Launching Edge...');
-  cleanupStaleProfileLock();
-  const context = await chromium.launchPersistentContext(PROFILE, {
-    channel: 'msedge',
-    headless: false,
-    slowMo: 200,
-    viewport: { width: 1440, height: 900 },
-    acceptDownloads: true,
-  });
-  const page = await context.newPage();
-
-  try {
-    await page.goto('https://hootsuite.com/dashboard#/analytics', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(3000);
-
-    if (page.url().includes('signin') || page.url().includes('login')) {
-      console.log('\n⚠ Please log in to Hootsuite in the browser window, then leave it open.');
-      await page.waitForURL('**hootsuite.com/dashboard**', { timeout: 300000 });
-      await page.waitForTimeout(2000);
-      await page.goto('https://hootsuite.com/dashboard#/analytics', { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await page.waitForTimeout(3000);
-    }
-    console.log('Logged in.');
-
-    const dismissCookieModal = async () => {
-      const btn = page.locator('button:has-text("Confirm My Choices")').first();
-      if (await btn.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await btn.click();
-        await page.waitForTimeout(800);
-      }
-    };
-    await dismissCookieModal();
-
-    console.log('\n--- Exporting Instagram engagement ---');
-    await page.goto(REPORT_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(4000);
-    await dismissCookieModal();
-
-    let fileUrl = null;
-    const responseHandler = async res => {
-      if (res.url().includes('/service/web/v1/exports/') && res.request().method() === 'POST') {
-        try {
-          const body = await res.json();
-          const links = body.links || [];
-          for (const l of links) {
-            const href = l.link || l.href || l.url;
-            if (href) { fileUrl = href.startsWith('http') ? href : `https://measure.hootsuite.com${href}`; break; }
-          }
-          if (!fileUrl) fileUrl = body.file_url || body.url || body.download_url;
-        } catch { /* ignore parse failures, polling below will time out */ }
-      }
-    };
-    page.on('response', responseHandler);
-
-    const dismissPendoGuide = async () => {
-      const pendoBase = page.locator('#pendo-base');
-      if (await pendoBase.count() === 0) return;
-      await page.keyboard.press('Escape').catch(() => {});
-      await page.waitForTimeout(300);
-      const closeBtn = pendoBase.locator('button[aria-label="Close"], ._pendo-close-guide, [class*="pendo-close"]').first();
-      if (await closeBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await closeBtn.click().catch(() => {});
-        await page.waitForTimeout(300);
-      }
-    };
-    await dismissPendoGuide();
-
-    const exportBtn = page.locator('button:has-text("Export")').first();
-    await exportBtn.waitFor({ state: 'visible', timeout: 10000 });
-    // Hootsuite's Pendo onboarding backdrop can still cover the button even after
-    // the dismiss attempt above (observed 2026-07-20) — force bypasses the
-    // pointer-interception actionability check and clicks the real element directly.
-    await exportBtn.click({ force: true });
-    await page.waitForTimeout(1500);
-
-    const allEls = await page.locator('button, div, span, li').all();
-    let clicked = false;
-    for (const el of allEls) {
-      const text = await el.innerText({ timeout: 100 }).catch(() => '');
-      if (text.trim() === 'Microsoft Excel (.xlsx)') {
-        const box = await el.boundingBox();
-        if (box && box.width > 0) {
-          await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-          clicked = true;
-          break;
-        }
-      }
-    }
-    if (!clicked) {
-      page.off('response', responseHandler);
-      throw new Error('Could not find Excel export option — Hootsuite UI may have changed');
-    }
-
-    for (let i = 0; i < 15; i++) {
-      await page.waitForTimeout(1000);
-      if (fileUrl) break;
-    }
-    page.off('response', responseHandler);
-
-    if (fileUrl && fileUrl.includes('/exports/')) {
-      console.log('  Polling export status...');
-      for (let i = 0; i < 30; i++) {
-        await page.waitForTimeout(3000);
-        const resp = await page.request.get(fileUrl, { headers: { Accept: 'application/json' } });
-        const body = await resp.json().catch(() => ({}));
-        if (body.url) { fileUrl = body.url; break; }
-        if (body.state === 'failed') throw new Error('Hootsuite export failed');
-      }
-    }
-    if (!fileUrl || fileUrl.includes('/exports/')) {
-      throw new Error('No download URL found for Instagram export');
-    }
-
-    const today = new Date().toISOString().slice(0, 10);
-    const destPath = path.join(DOWNLOAD_DIR, `instagram_engagement_${today}.xlsx`);
-    const fileResp = await page.request.get(fileUrl);
-    writeFileSync(destPath, await fileResp.body());
-    console.log(`Saved: ${destPath}`);
-    return destPath;
-  } finally {
-    await context.close();
-  }
-}
-
 function toNum(v) {
-  if (v === undefined || v === null || v === '') return 0;
-  return parseInt(String(v).replace(/,/g, ''), 10) || 0;
+  const n = (v && typeof v === 'object') ? v.total : v;
+  return Number(n) || 0;
 }
 
-async function parseDailyRows(xlsxPath) {
-  const XLSX = (await import('xlsx')).default;
-  const wb = XLSX.readFile(xlsxPath);
-  const ws = wb.Sheets['Account Metrics'];
-  const grid = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false });
-  const headers = grid[0];
-  const aggTypes = grid[1];
-  const dataRows = grid.slice(2);
+function friendlyType(metadata) {
+  const postType = (metadata?.post_type || '').toUpperCase();
+  const mediaType = (metadata?.media_type || '').toUpperCase();
+  if (postType === 'REEL' || postType === 'REELS') return 'Reel';
+  if (postType === 'STORY') return 'Story';
+  if (postType === 'CAROUSEL' || postType === 'CAROUSEL_ALBUM' || mediaType === 'CAROUSEL_ALBUM') return 'Carousel';
+  if (postType === 'PHOTO' || postType === 'IMAGE' || mediaType === 'PHOTO' || mediaType === 'IMAGE') return 'Photo';
+  if (postType === 'VIDEO' || mediaType === 'VIDEO') return 'Video';
+  // Unknown value — return Title Case rather than a raw uppercase API constant.
+  const raw = postType || mediaType || 'Post';
+  return raw.charAt(0) + raw.slice(1).toLowerCase();
+}
 
-  const colIndex = {};
-  for (const [key, label] of Object.entries(METRIC_LABELS)) {
-    const idx = headers.findIndex((h, i) => h === label && /daily/i.test(aggTypes[i] || ''));
-    if (idx === -1) throw new Error(`Could not find a "Daily aggregated" column for "${label}" — Hootsuite export layout may have changed further.`);
-    colIndex[key] = idx;
+// NOTE: new_followers_count is a GROSS gain metric (Hootsuite separately exposes
+// lost_followers_count) — summing it alone overstates growth by roughly 2x, since
+// it ignores unfollows entirely. True net growth is computed here from the
+// followers_count snapshot delta instead (verified against gained-minus-lost:
+// the two methods reconciled within ~3% on a 19-day test — close enough to trust
+// the simpler, more directly verifiable snapshot-delta approach as primary).
+async function computeNetFollowerGrowth(profileId, startDate, endDate) {
+  const dayBefore = new Date(startDate + 'T00:00:00Z');
+  dayBefore.setUTCDate(dayBefore.getUTCDate() - 1);
+  const since = dayBefore.toISOString().slice(0, 10);
+  const metrics = await listProfileMetrics(profileId, since, endDate);
+  if (metrics.length < 2) return null;
+  const sorted = [...metrics].sort((a, b) => a.date.localeCompare(b.date));
+  const first = toNum(sorted[0].metrics?.followers_count);
+  const last = toNum(sorted[sorted.length - 1].metrics?.followers_count);
+  return last - first;
+}
+
+async function findProfileId() {
+  const profiles = await listSocialProfiles();
+  const match = profiles.find(p => p.type === 'INSTAGRAMBUSINESS' && p.socialNetworkUsername === INSTAGRAM_USERNAME);
+  if (!match) {
+    throw new Error(`Could not find Instagram Business profile "${INSTAGRAM_USERNAME}" among Hootsuite's connected social profiles.`);
   }
-  const dateColIdx = headers.indexOf('Date (GMT)');
-
-  const daily = {};
-  for (const row of dataRows) {
-    const date = row[dateColIdx];
-    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
-    const entry = {};
-    for (const [key, idx] of Object.entries(colIndex)) entry[key] = toNum(row[idx]);
-    daily[date] = entry;
-  }
-  return daily;
-}
-
-async function parseTopPosts(xlsxPath, start, end, limit = 3) {
-  const XLSX = (await import('xlsx')).default;
-  const wb = XLSX.readFile(xlsxPath);
-  const ws = wb.Sheets['IG - Posts table'];
-  if (!ws) return [];
-  const rows = XLSX.utils.sheet_to_json(ws, { raw: false });
-  const startD = new Date(start + 'T00:00:00Z');
-  const endD = new Date(end + 'T23:59:59Z');
-
-  return rows
-    .map(r => {
-      const raw = r['Date (GMT)'] || '';
-      const d = new Date(raw.replace(' ', 'T') + 'Z');
-      return { r, d };
-    })
-    .filter(({ d }) => !isNaN(d) && d >= startD && d <= endD)
-    .map(({ r, d }) => ({
-      postId: r['Instagram Post ID'],
-      date: d.toISOString().slice(0, 10),
-      type: r['Post Type'],
-      caption: r['Post Message'] || '',
-      likes: toNum(r['Likes']),
-      comments: toNum(r['Comments']),
-      shares: toNum(r['Shares']),
-      saves: toNum(r['Saves']),
-      views: toNum(r['Views']),
-      reach: toNum(r['Reach']),
-      engagement: toNum(r['Engagement']),
-      engRate: parseFloat(r['Engagement rate']) || 0,
-    }))
-    .sort((a, b) => b.engagement - a.engagement)
-    .slice(0, limit);
-}
-
-function findLatestDownloadedExport() {
-  const files = readdirSync(DOWNLOAD_DIR)
-    .filter(f => /^instagram_engagement_\d{4}-\d{2}-\d{2}\.xlsx$/.test(f))
-    .map(f => ({ f, mtime: statSync(path.join(DOWNLOAD_DIR, f)).mtimeMs }))
-    .sort((a, b) => b.mtime - a.mtime);
-  return files[0] ? path.join(DOWNLOAD_DIR, files[0].f) : null;
-}
-
-function loadArchive() {
-  if (!existsSync(ARCHIVE_PATH)) return {};
-  return JSON.parse(readFileSync(ARCHIVE_PATH, 'utf8'));
-}
-
-function saveArchive(archive) {
-  const sorted = Object.fromEntries(Object.keys(archive).sort().map(k => [k, archive[k]]));
-  writeFileSync(ARCHIVE_PATH, JSON.stringify(sorted, null, 2));
-}
-
-function sumRange(archive, start, end) {
-  const totals = { likes: 0, views: 0, comments: 0, saves: 0, engagement: 0, shares: 0 };
-  const foundDays = [];
-  const missing = [];
-  let d = new Date(start + 'T00:00:00Z');
-  const endD = new Date(end + 'T00:00:00Z');
-  while (d <= endD) {
-    const key = d.toISOString().slice(0, 10);
-    if (archive[key]) {
-      for (const k of Object.keys(totals)) totals[k] += archive[key][k];
-      foundDays.push(key);
-    } else {
-      missing.push(key);
-    }
-    d.setUTCDate(d.getUTCDate() + 1);
-  }
-  return { totals, foundDays, missing };
+  return match.id;
 }
 
 async function main() {
-  let archive = loadArchive();
-  let xlsxPath;
+  const profileId = await findProfileId();
+  const posts = await listPosts(profileId, startDate, endDate);
 
-  if (!noScrape) {
-    xlsxPath = await scrapeInstagramReport();
-    const daily = await parseDailyRows(xlsxPath);
-    archive = { ...archive, ...daily };
-    saveArchive(archive);
-  } else {
-    xlsxPath = findLatestDownloadedExport();
-    if (!xlsxPath) throw new Error('No existing export in hootsuite-downloads/ to read from — run without --no-scrape first.');
-    if (Object.keys(archive).length === 0) {
-      console.log(`No archive yet — seeding from ${xlsxPath}`);
-      archive = await parseDailyRows(xlsxPath);
-      saveArchive(archive);
-    }
+  const totals = { likes: 0, views: 0, comments: 0, saves: 0, engagement: 0, shares: 0 };
+  const mappedPosts = posts.map(p => {
+    const m = p.metrics || {};
+    const mapped = {
+      postId: p.externalId ?? null,
+      date: (p.createdAt || '').slice(0, 10),
+      type: friendlyType(p.metadata),
+      caption: p.content || '',
+      likes: toNum(m.likes),
+      comments: toNum(m.comments),
+      shares: toNum(m.shares),
+      saves: toNum(m.saves),
+      views: toNum(m.views),
+      reach: toNum(m.reach),
+      engagement: toNum(m.engagement),
+      engRate: toNum(m.engagement_rate),
+    };
+    totals.likes += mapped.likes;
+    totals.views += mapped.views;
+    totals.comments += mapped.comments;
+    totals.saves += mapped.saves;
+    totals.engagement += mapped.engagement;
+    totals.shares += mapped.shares;
+    return mapped;
+  });
+
+  const topPosts = [...mappedPosts].sort((a, b) => b.engagement - a.engagement).slice(0, 3);
+
+  let newFollowers = null;
+  try {
+    newFollowers = await computeNetFollowerGrowth(profileId, startDate, endDate);
+  } catch (e) {
+    console.warn(`Could not compute net follower growth (non-fatal): ${e.message}`);
   }
 
-  const { totals, foundDays, missing } = sumRange(archive, startDate, endDate);
-  const topPosts = await parseTopPosts(xlsxPath, startDate, endDate);
+  const result = { startDate, endDate, ...totals, postsCount: posts.length, newFollowers, topPosts };
 
   if (jsonMode) {
-    process.stdout.write(JSON.stringify({ startDate, endDate, ...totals, daysFound: foundDays.length, missingDays: missing, topPosts }) + '\n');
+    process.stdout.write(JSON.stringify(result) + '\n');
     return;
   }
 
-  console.log(`\nInstagram ${startDate} → ${endDate} (${foundDays.length}/${foundDays.length + missing.length} days in archive)`);
-  console.log(`  Engagement: ${totals.engagement}`);
-  console.log(`  Views:      ${totals.views}`);
-  console.log(`  Likes:      ${totals.likes}`);
-  console.log(`  Comments:   ${totals.comments}`);
-  console.log(`  Saves:      ${totals.saves}`);
-  console.log(`  Shares:     ${totals.shares}`);
-  console.log(`  Top posts this week: ${topPosts.length}`);
+  console.log(`\nInstagram ${startDate} -> ${endDate} (${posts.length} posts published)`);
+  console.log(`  Engagement:    ${totals.engagement}`);
+  console.log(`  Views:         ${totals.views}`);
+  console.log(`  Likes:         ${totals.likes}`);
+  console.log(`  Comments:      ${totals.comments}`);
+  console.log(`  Saves:         ${totals.saves}`);
+  console.log(`  Shares:        ${totals.shares}`);
+  console.log(`  New followers: ${newFollowers ?? 'unavailable'}`);
+  console.log(`  Top posts:`);
   for (const p of topPosts) {
-    console.log(`    ${p.date} [${p.type}] eng=${p.engagement} views=${p.views} — ${p.caption.slice(0, 60)}`);
-  }
-  if (missing.length) {
-    console.warn(`\n⚠ No archived data for: ${missing.join(', ')}`);
-    console.warn('  Hootsuite\'s report only shows month-to-date, so once a month ends its days');
-    console.warn('  are gone unless they were archived before rollover. Run this script weekly');
-    console.warn('  (without --no-scrape) to keep the archive current.');
+    console.log(`    ${p.date} [${p.type}] eng=${p.engagement} views=${p.views} - ${p.caption.slice(0, 60)}`);
   }
 }
 
