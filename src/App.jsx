@@ -68,6 +68,7 @@ const _wMon          = latestWeek.week.split(" ")[0];
 const _wEndDay       = _wStartDay + 6;
 const weekLabel      = `${_wMon} ${_wStartDay}–${_wEndDay}`;
 const dateRangeLabel = `Jan – ${_wMon} ${_wEndDay}, ${DATA_YEAR}`;
+const topPostsLabel  = `${weekLabel} · Top ${topPosts.length} · LinkedIn export`;
 
 function fmtK(n) { return n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n); }
 
@@ -362,7 +363,7 @@ export default function App() {
 
           <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px" }}>
             <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>Top Posts by Engagements</div>
-            <div style={{ fontSize: 11, color: MUTED, marginBottom: 14 }}>Jan–Apr 2026 · Top 5 · LinkedIn export</div>
+            <div style={{ fontSize: 11, color: MUTED, marginBottom: 14 }}>{topPostsLabel}</div>
             {topPosts.map((p, i) => (
               <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 10px", borderRadius: 8, background: i === 0 ? GOLD_DIM : "transparent", marginBottom: 6, border: i === 0 ? `1px solid rgba(201,168,76,0.2)` : "1px solid transparent" }}>
                 <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: i === 0 ? GOLD : MUTED, width: 16, flexShrink: 0, paddingTop: 1 }}>#{i + 1}</div>
