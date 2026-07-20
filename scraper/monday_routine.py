@@ -246,8 +246,6 @@ if not li_for_html.get("members_reached"):
         log(f"  WARNING: {log_path.name} not found — members_reached will show 0")
 
 ig_for_html = dict(ig)
-ig_for_html.setdefault("reach", 0)                 # not tracked by instagram_report.mjs's summary
-ig_for_html.setdefault("prev_reach", 0)
 ig_for_html["top_posts"] = [
     {"Post Message": p.get("caption", ""), "Likes": p.get("likes", 0), "Post Permalink": "#"}
     for p in ig.get("top_posts", [])[:3]
