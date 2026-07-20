@@ -187,5 +187,197 @@ export async function exportAnalyticsWorkbook(page, destPath) {
   await download.saveAs(destPath);
   console.log(`  Downloaded: ${destPath}`);
 
-  return XLSX.read(fs.readFileSync(destPath));
+  // Windows sometimes still holds a brief lock on the file right after saveAs() resolves
+  // (antivirus scan, download-manager handle) — retry the read a few times before giving up.
+  let lastErr;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      return XLSX.read(fs.readFileSync(destPath));
+    } catch (e) {
+      lastErr = e;
+      await new Promise(r => setTimeout(r, 500));
+    }
+  }
+  throw lastErr;
+}
+
+// The TOP POSTS sheet holds two side-by-side tables (engagement-ranked and impression-ranked,
+// up to 50 rows each) under a title row + header row. Read raw so a stray title cell doesn't
+// get treated as the object keys. Returns posts published within [startDate, endDate], sorted
+// by engagement descending.
+export function extractTopPosts(XLSX, wb, startDate, endDate) {
+  const sheetName = wb.SheetNames.find(n => /top ?posts|publicaciones/i.test(n));
+  if (!sheetName) throw new Error('No TOP POSTS sheet found in export.');
+
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, raw: false });
+
+  const start = new Date(startDate + 'T00:00:00');
+  const end   = new Date(endDate + 'T23:59:59');
+
+  // Build an impressions lookup (right-hand table, cols 4-6) keyed by URL, since the two
+  // tables are independently sorted and don't line up row-by-row.
+  const impressionsByUrl = new Map();
+  for (const row of rows.slice(2)) {
+    const [, , , , url, , impr] = row;
+    if (url) impressionsByUrl.set(url, parseInt(impr, 10) || 0);
+  }
+
+  const byEngagement = [];
+  for (const row of rows.slice(2)) {
+    const [url, dateStr, eng] = row;
+    if (!url || !dateStr) continue;
+    const d = new Date(dateStr + ' 12:00:00');
+    if (isNaN(d) || d < start || d > end) continue;
+    byEngagement.push({
+      url,
+      date: dateStr,
+      engagements: parseInt(eng, 10) || 0,
+      impressions: impressionsByUrl.get(url) || 0,
+    });
+  }
+
+  byEngagement.sort((a, b) => b.engagements - a.engagements);
+  return byEngagement;
+}
+
+// LinkedIn's feed DOM now ships with hashed/atomic CSS class names (no more stable
+// .feed-shared-* classes or dir="ltr" markers), so the old selectors below always miss.
+// The post body text is still reliably reachable via data-testid="expandable-text-box"
+// (falls back to the componentkey="feed-commentary_..." wrapper, then the legacy selectors
+// in case LinkedIn A/B-tests an older build).
+export async function fetchPostPreview(page, url) {
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.waitForTimeout(3000);
+
+    const selectors = [
+      'span[data-testid="expandable-text-box"]',
+      'p[componentkey^="feed-commentary_"]',
+      '.feed-shared-update-v2__description span[dir="ltr"]',
+      '.feed-shared-text span[dir="ltr"]',
+      '.update-components-text span[dir="ltr"]',
+      'article span[dir="ltr"]',
+      '[data-test-id="main-feed-activity-card"] span[dir="ltr"]',
+    ];
+
+    let text = '';
+    for (const sel of selectors) {
+      try {
+        const el = page.locator(sel).first();
+        if (await el.isVisible({ timeout: 2000 })) {
+          text = await el.innerText();
+          if (text.trim().length > 20) break;
+        }
+      } catch { /* try next */ }
+    }
+
+    if (!text || text.length < 20) {
+      const spans = await page.locator('span[dir="ltr"]').allInnerTexts();
+      text = spans
+        .map(s => s.trim())
+        .filter(s => s.length > 30 && !/^(Like|Comment|Repost|Send|Follow|Connect|Share)$/i.test(s))
+        .sort((a, b) => b.length - a.length)[0] || '';
+    }
+
+    return text.replace(/\s+/g, ' ').trim().slice(0, 200);
+  } catch (e) {
+    console.warn(`  Failed to fetch preview for ${url}: ${e.message}`);
+    return '';
+  }
+}
+
+// ENGAGEMENT sheet: one row per day (Date, Impressions, Engagements). Sums Engagements for days
+// within [startDate, endDate]. NOTE: this is "engagement received on any post during the week"
+// (a daily aggregate) — a different, larger number than "engagement earned by posts published
+// during the week" (see extractTopPosts, which is per-post and only counts new posts). The
+// dashboard's weeklyData.engagements field uses this daily-aggregate total, matching what
+// Carla's report already sends.
+export function extractEngagementTotal(XLSX, wb, startDate, endDate) {
+  const sheetName = wb.SheetNames.find(n => /engagement/i.test(n)) || wb.SheetNames[0];
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { raw: false });
+
+  const startD = new Date(startDate + 'T00:00:00');
+  const endD   = new Date(endDate + 'T23:59:59');
+  let total = 0;
+
+  for (const row of rows) {
+    const dateKey = Object.keys(row).find(k => /date|day/i.test(k));
+    const engKey  = Object.keys(row).find(k => /engagement|social/i.test(k));
+    if (!dateKey || !engKey) continue;
+
+    const rowDate = new Date(row[dateKey]);
+    if (isNaN(rowDate) || rowDate < startD || rowDate > endD) continue;
+
+    total += parseInt(String(row[engKey]).replace(/,/g, ''), 10) || 0;
+  }
+
+  return total;
+}
+
+// Same ENGAGEMENT sheet as extractEngagementTotal, but returns the per-day rows instead of
+// just the sum — used for Carla's report, which shows a daily breakdown.
+export function extractDailyEngagements(XLSX, wb, startDate, endDate) {
+  const sheetName = wb.SheetNames.find(n => /engagement/i.test(n)) || wb.SheetNames[0];
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { raw: false });
+
+  const startD = new Date(startDate + 'T00:00:00');
+  const endD   = new Date(endDate + 'T23:59:59');
+  const daily = [];
+
+  for (const row of rows) {
+    const dateKey = Object.keys(row).find(k => /date|day/i.test(k));
+    const engKey  = Object.keys(row).find(k => /engagement|social/i.test(k));
+    if (!dateKey || !engKey) continue;
+
+    const rowDate = new Date(row[dateKey]);
+    if (isNaN(rowDate) || rowDate < startD || rowDate > endD) continue;
+
+    daily.push({
+      date: rowDate.toISOString().split('T')[0],
+      engagements: parseInt(String(row[engKey]).replace(/,/g, ''), 10) || 0,
+    });
+  }
+
+  daily.sort((a, b) => a.date.localeCompare(b.date));
+  return daily;
+}
+
+// DISCOVERY sheet: two rows, "Impressions" and "Members reached", each with one value column
+// for the whole selected range (header is something like "7/6/2026 - 7/12/2026").
+export function extractDiscoveryTotals(XLSX, wb) {
+  const sheetName = wb.SheetNames.find(n => /discovery|descubrimiento/i.test(n));
+  if (!sheetName) return { impressions: 0, membersReached: 0 };
+
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, raw: false });
+  let impressions = 0, membersReached = 0;
+  for (const row of rows.slice(1)) {
+    const [label, value] = row;
+    if (/impression/i.test(label || '')) impressions = parseInt(value, 10) || 0;
+    if (/members? reached/i.test(label || '')) membersReached = parseInt(value, 10) || 0;
+  }
+  return { impressions, membersReached };
+}
+
+// FOLLOWERS sheet: row 0 is ["Total followers on <date>", "<count>"] (label in col A, the
+// actual number in col B), row 1 is blank, row 2 is the real header ["Date", "New followers"],
+// then data rows as [dateStr, count]. Returns followers gained within [startDate, endDate] plus
+// the total as of the export.
+export function extractFollowers(XLSX, wb, startDate, endDate) {
+  const sheetName = wb.SheetNames.find(n => /followers|seguidores/i.test(n));
+  if (!sheetName) return { gained: 0, total: 0 };
+
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, raw: false });
+  const total = parseInt(rows[0]?.[1], 10) || 0;
+
+  const start = new Date(startDate + 'T00:00:00');
+  const end   = new Date(endDate + 'T23:59:59');
+  let gained = 0;
+  for (const row of rows.slice(3)) {
+    const [dateStr, count] = row;
+    if (!dateStr) continue;
+    const d = new Date(dateStr + ' 12:00:00');
+    if (isNaN(d) || d < start || d > end) continue;
+    gained += parseInt(count, 10) || 0;
+  }
+  return { gained, total };
 }

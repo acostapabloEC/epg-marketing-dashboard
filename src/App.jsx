@@ -49,9 +49,9 @@ const monthlyData = [
 ];
 
 const topPosts = [
-  { date: "Jul 16", engagements: 40, impressions: 5345, format: "Status", preview: "" },
-  { date: "Jul 13", engagements: 39, impressions: 6963, format: "Status", preview: "" },
-  { date: "Jul 14", engagements: 17, impressions: 1683, format: "Status", preview: "" },
+  { date: "Jul 16", engagements: 40, impressions: 5345, format: "Status", preview: "One of the watches on my wrist frequently is a Breitling Bentley Emergency. New, they run $17-18,000. I paid $4,000 for it. I could sell it tomorrow for probably $5,000 because they're hard to come by" },
+  { date: "Jul 13", engagements: 39, impressions: 6963, format: "Status", preview: "For a while I didn't drive my Ferraris to the office. I had a nice car but not a nice nice car, and part of the reason was that I had people on my management team who were resentful. I could feel it." },
+  { date: "Jul 14", engagements: 17, impressions: 1683, format: "Status", preview: "There was a Mustang GT at one of my recent races that smoked all of us. Every car on that track. Ferraris, Lamborghinis, everything. And it wasn't a fluke. He was in a fast car and he was a great driv" },
 ];
 
 // ── Derived from data arrays — update by editing weeklyData / monthlyData ──
