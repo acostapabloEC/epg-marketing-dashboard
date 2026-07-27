@@ -36,6 +36,7 @@ const weeklyData = [
   { week: "Jul 01", engagements: 185, impressions: 19028, posts: 7, followers: 73 },
   { week: "Jul 06", engagements: 220, impressions: 32756, posts: 13, followers: 74 },
   { week: "Jul 13", engagements: 250, impressions: 32643, posts: 10, followers: 54, membersReached: 13463 },
+  { week: "Jul 20", engagements: 62, impressions: 9832, posts: 3, followers: 24, membersReached: 3660 },
 ];
 
 const monthlyData = [
@@ -45,18 +46,18 @@ const monthlyData = [
   { month: "Apr",  engagements: 419, goal: 750 },
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 476, goal: 800 },
-  { month: "Jul",  engagements: 655, goal: 700 },
+  { month: "Jul",  engagements: 717, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Jul 16", engagements: 40, impressions: 5345, format: "Status", preview: "One of the watches on my wrist frequently is a Breitling Bentley Emergency. New, they run $17-18,000. I paid $4,000 for it. I could sell it tomorrow for probably $5,000 because they're hard to come by" },
-  { date: "Jul 13", engagements: 39, impressions: 6963, format: "Status", preview: "For a while I didn't drive my Ferraris to the office. I had a nice car but not a nice nice car, and part of the reason was that I had people on my management team who were resentful. I could feel it." },
-  { date: "Jul 14", engagements: 17, impressions: 1683, format: "Status", preview: "There was a Mustang GT at one of my recent races that smoked all of us. Every car on that track. Ferraris, Lamborghinis, everything. And it wasn't a fluke. He was in a fast car and he was a great driv" },
+  { date: "Jul 25", engagements: 20, impressions: 1597, format: "Status", preview: "After 16 years of building this brand and 30 years in wealth management, I am excited to announce a tremendous opportunity at Elite Consulting Partners. We are looking for a new Chief Marketing Office" },
+  { date: "Jul 21", engagements: 8, impressions: 735, format: "Status", preview: "Cash or Pass: Selling Your Practice Edition. I get asked about selling a practice more than almost anything else, so I broke down 8 of the biggest decisions in one video. Selling to a private equity b" },
+  { date: "Jul 20", engagements: 3, impressions: 426, format: "Status", preview: "New data came out this week that should make every advisor stop and look at their service list. 68% of clients said they’d switch advisors for one who offers estate planning. Not “would consider it.” " },
 ];
 
 // ── Derived from data arrays — update by editing weeklyData / monthlyData ──
 const DATA_YEAR      = 2026;
-const TOTAL_FOLLOWERS = 13062;
+const TOTAL_FOLLOWERS = 13067;
 const MONTHLY_GOALS  = { Jan:750, Feb:750, Mar:750, Apr:750, May:700, Jun:800, Jul:700, Aug:700, Sep:700 };
 
 const latestWeek  = weeklyData[weeklyData.length - 1];
