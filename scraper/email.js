@@ -1,15 +1,70 @@
 import nodemailer from 'nodemailer';
+import dns from 'node:dns';
+import { promisify } from 'node:util';
+
+const dnsLookup = promisify(dns.lookup);
+
+// Nodemailer resolves its SMTP host with its own dns.Resolver (raw UDP/c-ares queries),
+// which times out on networks where that path is blocked even though the OS resolver
+// (dns.lookup, same as `nslookup`) works fine. Resolve via dns.lookup ourselves and hand
+// nodemailer the IP directly, with `servername` set so TLS still validates the real hostname.
+async function createTransport(host, port) {
+  const { address } = await dnsLookup(host);
+  return nodemailer.createTransport({
+    host: address,
+    port,
+    secure: false,
+    tls: { servername: host },
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+}
+
+// Carla Wade gets engagement numbers ONLY — no impressions, posts, or followers.
+// Pablo has repeatedly insisted this stays scoped; don't add other metrics here.
+// As of 2026-07-20 the report shows a daily breakdown (not just the weekly total) and
+// links to the live dashboard, per Pablo's explicit format request.
+export async function sendCarlaEmail({ engagement, startDate, endDate, daily, cc }) {
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM } = process.env;
+  if (!SMTP_USER || !SMTP_PASS) throw new Error('Missing SMTP_USER or SMTP_PASS in .env');
+
+  const transporter = await createTransport(SMTP_HOST || 'smtp.office365.com', parseInt(SMTP_PORT || '587'));
+
+  const rangeLabel = `${formatShortDate(startDate)}–${formatShortDate(endDate)}`;
+  const longRangeLabel = `${formatLongDate(startDate)} – ${formatLongDate(endDate)}`;
+  const dailyLines = (daily || [])
+    .map(d => `* ${formatShortDate(d.date)}: ${d.engagements.toLocaleString()}`)
+    .join('\n');
+
+  const text = `Hi Carla,\n\n` +
+    `Here is the LinkedIn Engagement total for the week of ${longRangeLabel}: ${engagement.toLocaleString()} engagements\n\n` +
+    `Daily breakdown:\n\n${dailyLines}\n\n` +
+    `The LinkedIn Dashboard has been updated and is live here: https://epg-marketing-dashboard.vercel.app/\n\n` +
+    `Best,\nEPG Marketing`;
+
+  await transporter.sendMail({
+    from: EMAIL_FROM || `EPG Marketing <${SMTP_USER}>`,
+    to: 'carlawade@eliteconsultingpartners.com',
+    ...(cc ? { cc } : {}),
+    subject: `Frank LaRosa LinkedIn Engagement — ${rangeLabel}`,
+    text,
+  });
+}
+
+function formatLongDate(isoDateStr) {
+  const d = new Date(isoDateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function formatShortDate(isoDateStr) {
+  const d = new Date(isoDateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
 
 export async function sendNewsletterEmail(data) {
   const { EMAIL_TO, EMAIL_FROM, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
   if (!SMTP_USER || !SMTP_PASS) throw new Error('Missing SMTP_USER or SMTP_PASS in .env');
 
-  const transporter = nodemailer.createTransport({
-    host: SMTP_HOST || 'smtp.office365.com',
-    port: parseInt(SMTP_PORT || '587'),
-    secure: false,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  });
+  const transporter = await createTransport(SMTP_HOST || 'smtp.office365.com', parseInt(SMTP_PORT || '587'));
 
   await transporter.sendMail({
     from: EMAIL_FROM || `EPG Marketing <${SMTP_USER}>`,
