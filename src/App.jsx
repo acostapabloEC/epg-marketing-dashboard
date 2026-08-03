@@ -37,6 +37,7 @@ const weeklyData = [
   { week: "Jul 06", engagements: 220, impressions: 32756, posts: 13, followers: 74 },
   { week: "Jul 13", engagements: 250, impressions: 32643, posts: 10, followers: 54, membersReached: 13463 },
   { week: "Jul 20", engagements: 62, impressions: 9832, posts: 3, followers: 24, membersReached: 3660 },
+  { week: "Jul 27", engagements: 55, impressions: 8835, posts: 6, followers: 20, membersReached: 3032 },
 ];
 
 const monthlyData = [
@@ -46,18 +47,18 @@ const monthlyData = [
   { month: "Apr",  engagements: 419, goal: 750 },
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 476, goal: 800 },
-  { month: "Jul",  engagements: 717, goal: 700 },
+  { month: "Jul",  engagements: 772, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Jul 25", engagements: 20, impressions: 1597, format: "Status", preview: "After 16 years of building this brand and 30 years in wealth management, I am excited to announce a tremendous opportunity at Elite Consulting Partners. We are looking for a new Chief Marketing Office" },
-  { date: "Jul 21", engagements: 8, impressions: 735, format: "Status", preview: "Cash or Pass: Selling Your Practice Edition. I get asked about selling a practice more than almost anything else, so I broke down 8 of the biggest decisions in one video. Selling to a private equity b" },
-  { date: "Jul 20", engagements: 3, impressions: 426, format: "Status", preview: "New data came out this week that should make every advisor stop and look at their service list. 68% of clients said they’d switch advisors for one who offers estate planning. Not “would consider it.” " },
+  { date: "Jul 27", engagements: 12, impressions: 1535, format: "Status", preview: "Someone shared a quote with me recently from a theologian who works on marriage. His argument was that men and women are fundamentally incompatible. That marriage is essentially the lifelong practice " },
+  { date: "Jul 28", engagements: 9, impressions: 2788, format: "Status", preview: "A story broke this week about a major custodian whose website tells advisors their pricing is \"simple and transparent,\" backed by a one-page fee schedule. A reporter asked to actually see that page. I" },
+  { date: "Jul 27", engagements: 5, impressions: 594, format: "Status", preview: "Julie Banta Mizerany , congratulations. Watching you earn this recognition has been incredibly rewarding, not because of the trip itself, but because of what it represents. You’ve built your success t" },
 ];
 
 // ── Derived from data arrays — update by editing weeklyData / monthlyData ──
 const DATA_YEAR      = 2026;
-const TOTAL_FOLLOWERS = 13067;
+const TOTAL_FOLLOWERS = 13082;
 const MONTHLY_GOALS  = { Jan:750, Feb:750, Mar:750, Apr:750, May:700, Jun:800, Jul:700, Aug:700, Sep:700 };
 
 const latestWeek  = weeklyData[weeklyData.length - 1];
