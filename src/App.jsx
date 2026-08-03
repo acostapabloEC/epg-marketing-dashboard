@@ -60,16 +60,23 @@ const topPosts = [
 const DATA_YEAR      = 2026;
 const TOTAL_FOLLOWERS = 13082;
 const MONTHLY_GOALS  = { Jan:750, Feb:750, Mar:750, Apr:750, May:700, Jun:800, Jul:700, Aug:700, Sep:700 };
+const MONTH_NAMES    = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 const latestWeek  = weeklyData[weeklyData.length - 1];
 const prevWeek    = weeklyData[weeklyData.length - 2];
 const latestMonth = monthlyData[monthlyData.length - 1];
 
+// Uses a real Date object (not startDay + 6) so a week straddling two calendar months rolls
+// the end day/month over correctly instead of producing e.g. "Jul 33" — see 2026-08-03 fix.
 const _wStartDay     = parseInt(latestWeek.week.split(" ")[1]);
 const _wMon          = latestWeek.week.split(" ")[0];
-const _wEndDay       = _wStartDay + 6;
-const weekLabel      = `${_wMon} ${_wStartDay}–${_wEndDay}`;
-const dateRangeLabel = `Jan – ${_wMon} ${_wEndDay}, ${DATA_YEAR}`;
+const _wEndDate      = new Date(DATA_YEAR, MONTH_NAMES.indexOf(_wMon), _wStartDay + 6);
+const _wEndDay       = _wEndDate.getDate();
+const _wEndMon       = MONTH_NAMES[_wEndDate.getMonth()];
+const weekLabel      = _wEndMon === _wMon
+  ? `${_wMon} ${_wStartDay}–${_wEndDay}`
+  : `${_wMon} ${_wStartDay}–${_wEndMon} ${_wEndDay}`;
+const dateRangeLabel = `Jan – ${_wEndMon} ${_wEndDay}, ${DATA_YEAR}`;
 const topPostsLabel  = `${weekLabel} · Top ${topPosts.length} · LinkedIn export`;
 
 function fmtK(n) { return n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n); }
