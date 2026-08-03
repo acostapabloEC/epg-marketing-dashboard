@@ -9,6 +9,39 @@ React/Vite app. Start sessions from this folder so this context loads automatica
 
 ---
 
+## ⚠ Playwright scraper PAUSED (2026-08-03, at Pablo's request — until further notice)
+
+`carla_report.js`, `top_posts.js`, and `linkedin_report.js` all automate a real login +
+UI navigation on Frank's actual LinkedIn account. Even though this reuses a real browser
+(lower-risk than API/cookie-replay automation) it's still automated access under a strict
+reading of LinkedIn's ToS, and Frank's account is his real professional identity — not
+something to risk for a weekly report. **Do not run any of these three scripts** (or
+anything that calls `ensureLoggedIn`/`setCustomDateRange`/`exportAnalyticsWorkbook` in
+`linkedin_export.mjs`) until Pablo explicitly says to resume.
+
+**Current process instead:** Pablo exports the report by hand from LinkedIn (Creator
+Analytics → Export → Custom range) and provides the file — drop it in
+`scraper/manual-exports/`. Then run:
+```
+node parse_manual_export.js manual-exports/<file>.xlsx <startDate> <endDate>
+```
+This produces the exact same JSON shape `linkedin_report.js` did (engagements,
+impressions, membersReached, posts, followersGained, followersTotal, topPosts[]) — purely
+local file parsing, zero LinkedIn interaction. The rest of the weekly update (editing
+`App.jsx`, build, push, verify, log, notify) is unchanged.
+
+**One gap:** the export's TOP POSTS sheet has each post's URL/date/numbers but not its
+caption text — getting that required visiting each post's page directly (the live
+scraper's `fetchPostPreview`), which is exactly the automated-access risk being avoided.
+`topPosts[].preview` comes back empty from `parse_manual_export.js`; leave it blank or
+fill it in by hand if captions are wanted on the dashboard.
+
+Carla's and John's reports are unaffected — they already read from `App.jsx`'s already-
+updated `weeklyData`, not a live scrape (see `C:\Users\ECP\carla\CLAUDE.md` and
+`john_report\` for detail).
+
+---
+
 ## The one file to edit
 
 **`src/App.jsx`** — all weekly data lives here. Four things to update each week:
