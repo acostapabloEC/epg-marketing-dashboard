@@ -258,7 +258,7 @@ export default function App() {
           <KpiCard source="LinkedIn · Frank LaRosa" label={`Total Engagements (${weekLabel})`} value={latestWeek.engagements.toString()} delta={engMoM} deltaLabel={`vs prior week (${prevWeek.engagements})`} accent={GOLD} large />
           <KpiCard source="LinkedIn · Frank LaRosa" label={`Total Impressions (${weekLabel})`} value={fmtK(latestWeek.impressions)} delta={imprMoM} deltaLabel={`vs prior week (${fmtK(prevWeek.impressions)})`} accent={BLUE} />
           <KpiCard source="LinkedIn · Frank LaRosa" label={`New Followers (${weekLabel})`} value={latestWeek.followers.toString()} delta={follMoM} deltaLabel={`vs prior week (${prevWeek.followers})`} accent={GREEN} />
-          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value={TOTAL_FOLLOWERS.toLocaleString()} accent={PURPLE} sub={`As of ${_wMon} ${_wEndDay}, ${DATA_YEAR}`} />
+          <KpiCard source="LinkedIn · Frank LaRosa" label="Total Followers" value={TOTAL_FOLLOWERS.toLocaleString()} accent={PURPLE} sub={`As of ${_wEndMon} ${_wEndDay}, ${DATA_YEAR}`} />
         </div>
 
         {/* ROW 2: CHARTS */}
