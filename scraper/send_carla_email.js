@@ -17,6 +17,10 @@
  *   node send_carla_email.js --send --cc pabloacosta@eliteconsultingpartners.com
  *       # optionally CC someone (e.g. Pablo) on an ad-hoc send; the automated
  *       # scheduled task doesn't pass this, so normal Monday sends are unaffected
+ *   node send_carla_email.js --file manual-exports/AggregateAnalytics_Frank LaRosa_2026-08-03_2026-08-09.xlsx
+ *       # daily-breakdown source, while the Playwright scraper is paused (2026-08-03) and
+ *       # linkedin_report_export_tmp.xlsx no longer gets written automatically. Defaults to
+ *       # that old path if omitted, for whenever automation resumes.
  */
 
 import 'dotenv/config';
@@ -61,17 +65,17 @@ function iso(d) {
   return d.toISOString().split('T')[0];
 }
 
-async function readDailyBreakdown(startDate, endDate) {
-  if (!fs.existsSync(DAILY_EXPORT_XLSX)) {
-    throw new Error(`${DAILY_EXPORT_XLSX} not found — the LinkedIn weekly export hasn't run yet this week.`);
+async function readDailyBreakdown(startDate, endDate, sourcePath) {
+  if (!fs.existsSync(sourcePath)) {
+    throw new Error(`${sourcePath} not found — the LinkedIn weekly export hasn't run yet this week.`);
   }
   const XLSX = await import('xlsx').then(m => m.default || m);
-  const wb = XLSX.readFile(DAILY_EXPORT_XLSX);
+  const wb = XLSX.readFile(sourcePath);
   const daily = extractDailyEngagements(XLSX, wb, startDate, endDate);
 
   if (daily.length === 0 || daily[0].date !== startDate || daily[daily.length - 1].date !== endDate) {
     throw new Error(
-      `${DAILY_EXPORT_XLSX} does not cover ${startDate} → ${endDate} (found ${daily.length} day(s)` +
+      `${sourcePath} does not cover ${startDate} → ${endDate} (found ${daily.length} day(s)` +
       (daily.length ? `, ${daily[0].date} → ${daily[daily.length - 1].date}` : '') +
       `) — it may be stale from a previous week's run.`
     );
@@ -86,6 +90,10 @@ async function main() {
   const expectWeek = expectIdx !== -1 ? argv[expectIdx + 1] : null;
   const ccIdx = argv.indexOf('--cc');
   const cc = ccIdx !== -1 ? argv[ccIdx + 1] : null;
+  const fileIdx = argv.indexOf('--file');
+  const sourcePath = fileIdx !== -1
+    ? (path.isAbsolute(argv[fileIdx + 1]) ? argv[fileIdx + 1] : path.join(__dirname, argv[fileIdx + 1]))
+    : DAILY_EXPORT_XLSX;
 
   const { weekStart, engagement } = readDashboardLatestWeek();
   const weekEnd = new Date(weekStart);
@@ -101,7 +109,7 @@ async function main() {
     process.exit(1);
   }
 
-  const daily = await readDailyBreakdown(startDate, endDate);
+  const daily = await readDailyBreakdown(startDate, endDate, sourcePath);
   const dailyTotal = daily.reduce((sum, d) => sum + d.engagements, 0);
   console.log('Daily breakdown: ' + daily.map(d => `${d.date}=${d.engagements}`).join(', '));
   if (dailyTotal !== engagement) {
