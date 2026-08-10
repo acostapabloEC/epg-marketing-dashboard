@@ -38,6 +38,7 @@ const weeklyData = [
   { week: "Jul 13", engagements: 250, impressions: 32643, posts: 10, followers: 54, membersReached: 13463 },
   { week: "Jul 20", engagements: 62, impressions: 9832, posts: 3, followers: 24, membersReached: 3660 },
   { week: "Jul 27", engagements: 55, impressions: 8835, posts: 6, followers: 20, membersReached: 3032 },
+  { week: "Aug 03", engagements: 43, impressions: 4152, posts: 5, followers: 17, membersReached: 1763 },
 ];
 
 const monthlyData = [
@@ -48,17 +49,18 @@ const monthlyData = [
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 476, goal: 800 },
   { month: "Jul",  engagements: 772, goal: 700 },
+  { month: "Aug",  engagements: 43, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Jul 27", engagements: 12, impressions: 1535, format: "Status", preview: "Someone shared a quote with me recently from a theologian who works on marriage. His argument was that men and women are fundamentally incompatible. That marriage is essentially the lifelong practice " },
-  { date: "Jul 28", engagements: 9, impressions: 2788, format: "Status", preview: "A story broke this week about a major custodian whose website tells advisors their pricing is \"simple and transparent,\" backed by a one-page fee schedule. A reporter asked to actually see that page. I" },
-  { date: "Jul 27", engagements: 5, impressions: 594, format: "Status", preview: "Julie Banta Mizerany , congratulations. Watching you earn this recognition has been incredibly rewarding, not because of the trip itself, but because of what it represents. You’ve built your success t" },
+  { date: "Aug 06", engagements: 10, impressions: 655, format: "Status", preview: "" },
+  { date: "Aug 05", engagements: 6, impressions: 658, format: "Status", preview: "" },
+  { date: "Aug 09", engagements: 6, impressions: 589, format: "Status", preview: "" },
 ];
 
 // ── Derived from data arrays — update by editing weeklyData / monthlyData ──
 const DATA_YEAR      = 2026;
-const TOTAL_FOLLOWERS = 13082;
+const TOTAL_FOLLOWERS = 13098;
 const MONTHLY_GOALS  = { Jan:750, Feb:750, Mar:750, Apr:750, May:700, Jun:800, Jul:700, Aug:700, Sep:700 };
 const MONTH_NAMES    = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
