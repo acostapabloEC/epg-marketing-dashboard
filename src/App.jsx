@@ -39,6 +39,7 @@ const weeklyData = [
   { week: "Jul 20", engagements: 62, impressions: 9832, posts: 3, followers: 24, membersReached: 3660 },
   { week: "Jul 27", engagements: 55, impressions: 8835, posts: 6, followers: 20, membersReached: 3032 },
   { week: "Aug 03", engagements: 43, impressions: 4152, posts: 5, followers: 17, membersReached: 1763 },
+  { week: "Aug 10", engagements: 76, impressions: 9798, posts: 9, followers: 17, membersReached: 3389 },
 ];
 
 const monthlyData = [
@@ -49,18 +50,18 @@ const monthlyData = [
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 476, goal: 800 },
   { month: "Jul",  engagements: 772, goal: 700 },
-  { month: "Aug",  engagements: 43, goal: 700 },
+  { month: "Aug",  engagements: 119, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Aug 06", engagements: 10, impressions: 655, format: "Status", preview: "" },
-  { date: "Aug 05", engagements: 6, impressions: 658, format: "Status", preview: "" },
-  { date: "Aug 09", engagements: 6, impressions: 589, format: "Status", preview: "" },
+  { date: "Aug 10", engagements: 20, impressions: 1734, format: "Status", preview: "" },
+  { date: "Aug 11", engagements: 7, impressions: 755, format: "Status", preview: "" },
+  { date: "Aug 13", engagements: 5, impressions: 597, format: "Status", preview: "" },
 ];
 
 // ── Derived from data arrays — update by editing weeklyData / monthlyData ──
 const DATA_YEAR      = 2026;
-const TOTAL_FOLLOWERS = 13098;
+const TOTAL_FOLLOWERS = 13104;
 const MONTHLY_GOALS  = { Jan:750, Feb:750, Mar:750, Apr:750, May:700, Jun:800, Jul:700, Aug:700, Sep:700 };
 const MONTH_NAMES    = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
