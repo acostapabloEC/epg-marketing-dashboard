@@ -42,7 +42,7 @@ const weeklyData = [
   { week: "Aug 10", engagements: 76, impressions: 9798, posts: 9, followers: 17, membersReached: 3389 },
   { week: "Aug 17", engagements: 86, impressions: 12491, posts: 9, followers: 43, membersReached: 4496 },
   { week: "Aug 24", engagements: 168, impressions: 15610, posts: 13, followers: 41, membersReached: 5130 },
-  { week: "Sep 01", engagements: 222, impressions: 26789, posts: 12, followers: 41, membersReached: 12465 },
+  { week: "Aug 31", engagements: 191, impressions: 26419, posts: 12, followers: 46, membersReached: 12046 },
 ];
 
 const monthlyData = [
@@ -53,14 +53,13 @@ const monthlyData = [
   { month: "May",  engagements: 212, goal: 700 },
   { month: "Jun",  engagements: 476, goal: 800 },
   { month: "Jul",  engagements: 772, goal: 700 },
-  { month: "Aug",  engagements: 373, goal: 700 },
-  { month: "Sep",  engagements: 222, goal: 700 },
+  { month: "Aug",  engagements: 564, goal: 700 },
 ];
 
 const topPosts = [
-  { date: "Sep 04", engagements: 136, impressions: 6934, format: "Status", preview: "" },
-  { date: "Sep 03", engagements: 19, impressions: 1857, format: "Status", preview: "" },
-  { date: "Sep 05", engagements: 15, impressions: 10772, format: "Status", preview: "" },
+  { date: "Sep 04", engagements: 116, impressions: 5918, format: "Status", preview: "" },
+  { date: "Sep 03", engagements: 19, impressions: 1807, format: "Status", preview: "" },
+  { date: "Sep 05", engagements: 12, impressions: 10156, format: "Status", preview: "" },
 ];
 
 // ── Derived from data arrays — update by editing weeklyData / monthlyData ──
