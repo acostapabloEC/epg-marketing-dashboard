@@ -90,6 +90,8 @@ async function main() {
   const expectWeek = expectIdx !== -1 ? argv[expectIdx + 1] : null;
   const ccIdx = argv.indexOf('--cc');
   const cc = ccIdx !== -1 ? argv[ccIdx + 1] : null;
+  const noteIdx = argv.indexOf('--note');
+  const note = noteIdx !== -1 ? argv[noteIdx + 1] : null;
   const fileIdx = argv.indexOf('--file');
   const sourcePath = fileIdx !== -1
     ? (path.isAbsolute(argv[fileIdx + 1]) ? argv[fileIdx + 1] : path.join(__dirname, argv[fileIdx + 1]))
@@ -121,7 +123,7 @@ async function main() {
     return;
   }
 
-  await sendCarlaEmail({ engagement, startDate, endDate, daily, cc });
+  await sendCarlaEmail({ engagement, startDate, endDate, daily, cc, note });
   console.log(`\n✓ Sent to Carla Wade${cc ? ` (cc: ${cc})` : ''} (${startDate} → ${endDate}: ${engagement.toLocaleString()} engagements)`);
 }
 

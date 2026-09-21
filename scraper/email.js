@@ -23,7 +23,7 @@ async function createTransport(host, port) {
 // Pablo has repeatedly insisted this stays scoped; don't add other metrics here.
 // As of 2026-07-20 the report shows a daily breakdown (not just the weekly total) and
 // links to the live dashboard, per Pablo's explicit format request.
-export async function sendCarlaEmail({ engagement, startDate, endDate, daily, cc }) {
+export async function sendCarlaEmail({ engagement, startDate, endDate, daily, cc, note }) {
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM } = process.env;
   if (!SMTP_USER || !SMTP_PASS) throw new Error('Missing SMTP_USER or SMTP_PASS in .env');
 
@@ -38,6 +38,7 @@ export async function sendCarlaEmail({ engagement, startDate, endDate, daily, cc
   const text = `Hi Carla,\n\n` +
     `Here is the LinkedIn Engagement total for the week of ${longRangeLabel}: ${engagement.toLocaleString()} engagements\n\n` +
     `Daily breakdown:\n\n${dailyLines}\n\n` +
+    (note ? `${note}\n\n` : '') +
     `The LinkedIn Dashboard has been updated and is live here: https://epg-marketing-dashboard.vercel.app/\n\n` +
     `Best,\nEPG Marketing`;
 

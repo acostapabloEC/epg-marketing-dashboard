@@ -11,10 +11,18 @@ Usage:
   python send_john_report.py            # PREVIEW: build table, open it on screen, send NOTHING
   python send_john_report.py --send     # greenlight: commit the week + email John + Teams DM
   python send_john_report.py --dry-run  # print the table to console only, no file/send
-  (add a path to use a specific .xlsx instead of the newest export in Downloads)
+  (add a path to use a specific .xlsx instead of reading the live dashboard)
+  --expect-week YYYY-MM-DD   Abort (no send, no log write) unless the dashboard's latest
+                             week matches this Monday. Used by the scheduled task so a
+                             stalled/failed dashboard update can't cause a stale re-send.
 
 Day to day you just use the two buttons: "1 - PREVIEW.bat" then "2 - SEND TO JOHN.bat".
 Nothing reaches John until you run --send.
+
+Data source: by default this reads the latest week straight out of `../src/App.jsx`'s
+`weeklyData` array -- the same numbers already on the live LinkedIn dashboard, kept in
+sync by the Monday `epg-linkedin-weekly-update` task. Pass an .xlsx path as an argument
+to fall back to the old manual-export mode.
 
 Env (all optional; defaults match the existing newsletter setup):
   ECP_EMAIL_PASS        Office365 password for Pablo's account
@@ -67,6 +75,31 @@ def newest_export() -> str | None:
     return max(files, key=sort_key)
 
 
+# ── Read the latest week straight from the live dashboard ───────────────────────
+APP_JSX = os.path.join(SCRIPT_DIR, "..", "src", "App.jsx")
+
+def read_dashboard_latest_week(app_jsx_path: str = APP_JSX) -> tuple[str, int]:
+    """Return (week_start_iso, engagements) for the last row of App.jsx's weeklyData."""
+    with open(app_jsx_path, encoding="utf-8") as f:
+        text = f.read()
+    m = re.search(r"weeklyData\s*=\s*\[(.*?)\n\];", text, re.S)
+    if not m:
+        raise ValueError(f"Could not find weeklyData array in {app_jsx_path}")
+    rows = re.findall(r'week:\s*"([^"]+)",\s*engagements:\s*(\d+)', m.group(1))
+    if not rows:
+        raise ValueError(f"weeklyData array in {app_jsx_path} had no parseable rows")
+    week_label, eng = rows[-1]
+    month_str, day_str = week_label.split()
+    month = datetime.strptime(month_str, "%b").month
+    day = int(day_str)
+    today = datetime.now()
+    year = today.year
+    candidate = datetime(year, month, day)
+    if candidate > today + timedelta(days=10):  # e.g. a Dec week read in early January
+        candidate = datetime(year - 1, month, day)
+    return candidate.date().isoformat(), int(eng)
+
+
 # ── Parse the ENGAGEMENT sheet into Mon–Sun weekly buckets ──────────────────────
 def parse_weekly_engagements(xlsx_path: str) -> dict[str, int]:
     """Return {week_start_iso: total_engagements} bucketed Mon–Sun.
@@ -114,28 +147,31 @@ def week_label(week_start_iso: str) -> str:
     return f"{start:%b} {start.day} – {end:%b} {end.day}"
 
 
+GREETING = "Good morning John, here are the engagement numbers:"
+
 # ── Render the 2-column table ──────────────────────────────────────────────────
-def build_outputs(rows: list[tuple[str, int]]) -> tuple[str, str]:
+def build_outputs(rows: list[tuple[str, int]], note: str | None = None) -> tuple[str, str]:
     """rows = [(week_label, engagements), ...] oldest->newest. Returns (text, html)."""
     w = max([len("Week")] + [len(r[0]) for r in rows])
-    text_lines = [f"{'Week'.ljust(w)}   Engagements",
+    text_lines = [GREETING, "",
+                  f"{'Week'.ljust(w)}   Engagements",
                   f"{'-'*w}   -----------"]
     for label, eng in rows:
         text_lines.append(f"{label.ljust(w)}   {eng:,}")
+    if note:
+        text_lines += ["", note]
     text = "\n".join(text_lines)
 
     html_rows = "".join(
-        f"<tr><td style='padding:4px 16px 4px 0'>{label}</td>"
-        f"<td style='padding:4px 0;text-align:right'>{eng:,}</td></tr>"
+        f"<tr><td>{label}</td><td>{eng:,}</td></tr>"
         for label, eng in rows
     )
     html = (
-        "<p>Frank LaRosa — LinkedIn engagement by week:</p>"
-        "<table style='border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px'>"
-        "<thead><tr>"
-        "<th style='text-align:left;border-bottom:1px solid #ccc;padding:4px 16px 4px 0'>Week</th>"
-        "<th style='text-align:right;border-bottom:1px solid #ccc;padding:4px 0'>Engagements</th>"
-        f"</tr></thead><tbody>{html_rows}</tbody></table>"
+        f"<p>{GREETING}</p>"
+        "<table border='1' cellpadding='4'>"
+        "<tr><th>Week</th><th>Engagements</th></tr>"
+        f"{html_rows}</table>"
+        + (f"<p>{note}</p>" if note else "")
     )
     return text, html
 
@@ -189,25 +225,46 @@ def write_and_open_preview(subject: str, html: str):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 def main():
-    flags = {"--send", "--dry-run"}
-    args = [a for a in sys.argv[1:] if a not in flags]
-    send = "--send" in sys.argv
-    dry_run = "--dry-run" in sys.argv
+    argv = sys.argv[1:]
+    send = "--send" in argv
+    dry_run = "--dry-run" in argv
+    expect_week = None
+    if "--expect-week" in argv:
+        i = argv.index("--expect-week")
+        expect_week = argv[i + 1]
+    note = None
+    if "--note" in argv:
+        i = argv.index("--note")
+        note = argv[i + 1]
+    flags = {"--send", "--dry-run", "--expect-week", expect_week, "--note", note}
+    args = [a for a in argv if a not in flags]
 
-    export = args[0] if args else newest_export()
-    if not export or not os.path.exists(export):
-        print(f"ERROR: no export found (looked for {EXPORT_GLOB} in {DOWNLOADS})")
-        sys.exit(1)
-    print(f"Export: {os.path.basename(export)}")
+    if args:
+        export = args[0]
+        if not os.path.exists(export):
+            print(f"ERROR: export not found: {export}")
+            sys.exit(1)
+        print(f"Export: {os.path.basename(export)}")
+        new_buckets = parse_weekly_engagements(export)
+    else:
+        week_start_iso, eng = read_dashboard_latest_week()
+        print(f"Dashboard latest week: {week_start_iso} ({eng:,} engagements)")
+        new_buckets = {week_start_iso: eng}
 
-    new_buckets = parse_weekly_engagements(export)
+    if expect_week:
+        latest_new_week = max(new_buckets)
+        if latest_new_week != expect_week:
+            print(f"ERROR: expected latest week {expect_week}, dashboard has {latest_new_week} "
+                  f"— dashboard may not be updated yet for this week. Nothing sent, log not touched.")
+            sys.exit(1)
+
     log = load_log()
     prospective = dict(log)
     prospective.update(new_buckets)  # upsert — re-dropping a week overwrites with latest
 
     recent = sorted(prospective.items())[-WEEKS_TO_SHOW:]
     rows = [(week_label(ws), eng) for ws, eng in recent]
-    text, html = build_outputs(rows)
+    text, html = build_outputs(rows, note)
     subject = f"Frank LaRosa LinkedIn — Weekly Engagement (through {week_label(recent[-1][0])})"
 
     print("\n" + text + "\n")
