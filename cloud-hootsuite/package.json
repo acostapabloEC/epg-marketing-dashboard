@@ -1,0 +1,9 @@
+{
+  "name": "epg-cloud-hootsuite",
+  "private": true,
+  "type": "module",
+  "description": "Laptop-independent weekly YouTube + Instagram dashboard update (GitHub Actions)",
+  "dependencies": {
+    "nodemailer": "^6.9.14"
+  }
+}

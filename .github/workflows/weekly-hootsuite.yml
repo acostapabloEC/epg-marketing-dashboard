@@ -1,0 +1,123 @@
+name: Weekly YouTube + Instagram update
+
+# Replaces the laptop-based Claude scheduled tasks `epg-youtube-weekly-update` and
+# `epg-instagram-weekly-update`. Both share ONE Hootsuite OAuth chain whose refresh token is
+# single-use, so they run one after the other in this single job, and the rotated token is
+# written back to the HOOTSUITE_REFRESH_TOKEN secret at the end (always, even on failure).
+#
+# Required secrets (this repo): GH_PAT, HOOTSUITE_CLIENT_ID, HOOTSUITE_CLIENT_SECRET,
+#   HOOTSUITE_REFRESH_TOKEN, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM
+# GH_PAT = fine-grained token: contents read/write on epg-youtube-dashboard and
+#   epg-instagram-dashboard, secrets read/write on epg-marketing-dashboard.
+#
+# NEVER run the laptop YouTube/Instagram tasks at the same time as this one: whichever side
+# refreshes second finds its token already dead.
+on:
+  schedule:
+    - cron: '0 11 * * 1' # Mondays 11:00 UTC (8:00am Argentina)
+  workflow_dispatch:
+    inputs:
+      end_date:
+        description: 'Week-ending Sunday (YYYY-MM-DD). Blank = most recent Sunday.'
+        required: false
+      dry_run:
+        description: 'Pull + edit + build only; do not push to the dashboards'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-hootsuite
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      HOOTSUITE_STATE_FILE: ${{ runner.temp }}/hootsuite_state.json
+      RESULT_DIR: ${{ runner.temp }}/results
+      DRY_RUN: ${{ inputs.dry_run || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: cloud-hootsuite
+          path: main
+
+      - uses: actions/checkout@v4
+        with:
+          repository: acostapabloEC/epg-youtube-dashboard
+          token: ${{ secrets.GH_PAT }}
+          path: yt
+
+      - uses: actions/checkout@v4
+        with:
+          repository: acostapabloEC/epg-instagram-dashboard
+          token: ${{ secrets.GH_PAT }}
+          path: ig
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Compute target week (most recent complete Mon-Sun)
+        run: |
+          END="${{ inputs.end_date }}"
+          [ -z "$END" ] && END=$(date -u -d 'last sunday' +%F)
+          START=$(date -u -d "$END - 6 days" +%F)
+          echo "START=$START" >> "$GITHUB_ENV"
+          echo "END=$END" >> "$GITHUB_ENV"
+          mkdir -p "$RESULT_DIR"
+          git config --global user.name "Pablo Acosta"
+          git config --global user.email "pabloacosta@eliteconsultingpartners.com"
+          echo "Target week: $START to $END"
+
+      - name: Install cloud-hootsuite dependencies
+        working-directory: main/cloud-hootsuite
+        run: npm install --no-audit --no-fund
+
+      - name: YouTube
+        working-directory: main/cloud-hootsuite
+        env:
+          HOOTSUITE_CLIENT_ID: ${{ secrets.HOOTSUITE_CLIENT_ID }}
+          HOOTSUITE_CLIENT_SECRET: ${{ secrets.HOOTSUITE_CLIENT_SECRET }}
+          HOOTSUITE_REFRESH_TOKEN: ${{ secrets.HOOTSUITE_REFRESH_TOKEN }}
+        run: node run_platform.mjs youtube "$GITHUB_WORKSPACE/yt" "$START" "$END"
+
+      - name: Instagram
+        working-directory: main/cloud-hootsuite
+        env:
+          HOOTSUITE_CLIENT_ID: ${{ secrets.HOOTSUITE_CLIENT_ID }}
+          HOOTSUITE_CLIENT_SECRET: ${{ secrets.HOOTSUITE_CLIENT_SECRET }}
+          HOOTSUITE_REFRESH_TOKEN: ${{ secrets.HOOTSUITE_REFRESH_TOKEN }}
+        run: node run_platform.mjs instagram "$GITHUB_WORKSPACE/ig" "$START" "$END"
+
+      # Must run even if the steps above failed: the first API call already burned the old token.
+      - name: Save rotated Hootsuite refresh token back to the secret
+        id: persist
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -f "$HOOTSUITE_STATE_FILE" ]; then
+            node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOOTSUITE_STATE_FILE,'utf8')).refreshToken)" \
+              | gh secret set HOOTSUITE_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY"
+            echo "Refresh token saved."
+          else
+            echo "No token rotation happened this run; nothing to save."
+          fi
+
+      - name: Email summary
+        if: always()
+        working-directory: main/cloud-hootsuite
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          PERSIST_OUTCOME: ${{ steps.persist.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: node notify_summary.mjs
