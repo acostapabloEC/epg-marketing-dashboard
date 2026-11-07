@@ -36,8 +36,6 @@ jobs:
   update:
     runs-on: ubuntu-latest
     env:
-      HOOTSUITE_STATE_FILE: ${{ runner.temp }}/hootsuite_state.json
-      RESULT_DIR: ${{ runner.temp }}/results
       DRY_RUN: ${{ inputs.dry_run || 'false' }}
     steps:
       - uses: actions/checkout@v4
@@ -68,7 +66,9 @@ jobs:
           START=$(date -u -d "$END - 6 days" +%F)
           echo "START=$START" >> "$GITHUB_ENV"
           echo "END=$END" >> "$GITHUB_ENV"
-          mkdir -p "$RESULT_DIR"
+          echo "HOOTSUITE_STATE_FILE=$RUNNER_TEMP/hootsuite_state.json" >> "$GITHUB_ENV"
+          echo "RESULT_DIR=$RUNNER_TEMP/results" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/results"
           git config --global user.name "Pablo Acosta"
           git config --global user.email "pabloacosta@eliteconsultingpartners.com"
           echo "Target week: $START to $END"
