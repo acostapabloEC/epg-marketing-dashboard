@@ -14,7 +14,7 @@ name: Weekly YouTube + Instagram update
 # refreshes second finds its token already dead.
 on:
   schedule:
-    - cron: '0 11 * * 1' # Mondays 11:00 UTC (8:00am Argentina)
+    - cron: '0 10 * * 1' # Mondays 10:00 UTC (7:00am Argentina, UTC-3)
   workflow_dispatch:
     inputs:
       end_date:
