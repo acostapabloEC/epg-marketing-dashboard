@@ -1,0 +1,65 @@
+name: Facebook pages API test (one-off)
+
+# Read-only discovery run: pulls every Facebook Page connected to Hootsuite for one week and prints
+# the results in the run summary. Manual trigger only. Shares the weekly-hootsuite concurrency group
+# and rotates/saves the single-use Hootsuite refresh token exactly like weekly-hootsuite.yml, so it
+# can never collide with the Monday YouTube + Instagram job.
+on:
+  workflow_dispatch:
+    inputs:
+      end_date:
+        description: 'Week-ending Sunday (YYYY-MM-DD). Blank = most recent Sunday.'
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-hootsuite
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: cloud-hootsuite
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Compute week
+        run: |
+          END="${{ inputs.end_date }}"
+          [ -z "$END" ] && END=$(date -u -d 'last sunday' +%F)
+          START=$(date -u -d "$END - 6 days" +%F)
+          echo "START=$START" >> "$GITHUB_ENV"
+          echo "END=$END" >> "$GITHUB_ENV"
+          echo "HOOTSUITE_STATE_FILE=$RUNNER_TEMP/hootsuite_state.json" >> "$GITHUB_ENV"
+
+      - name: Install
+        working-directory: cloud-hootsuite
+        run: npm install --no-audit --no-fund
+
+      - name: Pull Facebook pages
+        working-directory: cloud-hootsuite
+        env:
+          HOOTSUITE_CLIENT_ID: ${{ secrets.HOOTSUITE_CLIENT_ID }}
+          HOOTSUITE_CLIENT_SECRET: ${{ secrets.HOOTSUITE_CLIENT_SECRET }}
+          HOOTSUITE_REFRESH_TOKEN: ${{ secrets.HOOTSUITE_REFRESH_TOKEN }}
+        run: node facebook_test.mjs "$START" "$END"
+
+      - name: Save rotated Hootsuite refresh token back to the secret
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -f "$HOOTSUITE_STATE_FILE" ]; then
+            node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOOTSUITE_STATE_FILE,'utf8')).refreshToken)" \
+              | gh secret set HOOTSUITE_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY"
+            echo "Refresh token saved."
+          else
+            echo "No token rotation happened this run."
+          fi
