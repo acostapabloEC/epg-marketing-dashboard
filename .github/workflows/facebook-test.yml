@@ -51,6 +51,12 @@ jobs:
           HOOTSUITE_REFRESH_TOKEN: ${{ secrets.HOOTSUITE_REFRESH_TOKEN }}
         run: node facebook_test.mjs "$START" "$END"
 
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: facebook-section
+          path: cloud-hootsuite/facebook_section.html
+
       - name: Save rotated Hootsuite refresh token back to the secret
         if: always()
         env:
