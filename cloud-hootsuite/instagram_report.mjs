@@ -90,7 +90,11 @@ async function findProfileId() {
 
 async function main() {
   const profileId = await findProfileId();
-  const posts = await listPosts(profileId, startDate, endDate);
+  // The posts endpoint's `until` is EXCLUSIVE: querying until=endDate silently drops posts made on endDate
+  // itself (a Sunday, for weekly runs). Query endDate + 1 day. (Profile-metrics `until` is inclusive; don't add it there.)
+  const untilExclusive = new Date(endDate + 'T00:00:00Z');
+  untilExclusive.setUTCDate(untilExclusive.getUTCDate() + 1);
+  const posts = await listPosts(profileId, startDate, untilExclusive.toISOString().slice(0, 10));
 
   const totals = { likes: 0, views: 0, comments: 0, saves: 0, engagement: 0, shares: 0 };
   const mappedPosts = posts.map(p => {
