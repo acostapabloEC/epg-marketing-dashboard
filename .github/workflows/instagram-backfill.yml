@@ -1,0 +1,55 @@
+name: Instagram backfill (one-off, read-only)
+
+# Re-pulls past Instagram weeks to measure what the old Monday job dropped (posts on the last day of each
+# week, because the posts endpoint's `until` is exclusive). Writes an artifact only — changes no dashboard.
+# Shares the weekly-hootsuite concurrency group + token-save step (Hootsuite refresh token is single-use).
+on:
+  workflow_dispatch:
+    inputs:
+      first_monday:
+        description: 'First Monday to re-pull (YYYY-MM-DD)'
+        default: '2026-07-13'
+      last_monday:
+        description: 'Last Monday to re-pull (YYYY-MM-DD)'
+        default: '2026-11-09'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-hootsuite
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "HOOTSUITE_STATE_FILE=$RUNNER_TEMP/hootsuite_state.json" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: cloud-hootsuite
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pull
+        working-directory: cloud-hootsuite
+        env:
+          HOOTSUITE_CLIENT_ID: ${{ secrets.HOOTSUITE_CLIENT_ID }}
+          HOOTSUITE_CLIENT_SECRET: ${{ secrets.HOOTSUITE_CLIENT_SECRET }}
+          HOOTSUITE_REFRESH_TOKEN: ${{ secrets.HOOTSUITE_REFRESH_TOKEN }}
+        run: node instagram_backfill.mjs "${{ inputs.first_monday }}" "${{ inputs.last_monday }}" "$GITHUB_WORKSPACE/instagram_backfill.json"
+      - name: Save rotated Hootsuite refresh token back to the secret
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -f "$HOOTSUITE_STATE_FILE" ]; then
+            node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOOTSUITE_STATE_FILE,'utf8')).refreshToken)" \
+              | gh secret set HOOTSUITE_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY"
+            echo "Refresh token saved."
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: instagram-backfill
+          path: instagram_backfill.json
