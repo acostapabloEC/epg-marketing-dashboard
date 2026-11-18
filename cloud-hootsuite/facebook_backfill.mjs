@@ -1,5 +1,5 @@
 /**
- * facebook_backfill.mjs — one-off: weekly Facebook post counts for the last N complete weeks
+ * facebook_backfill.mjs — one-off: weekly Facebook + Instagram post counts for the last N complete weeks
  * (Frank LaRosa + Elite Consulting Partners Pages), to set a historical baseline.
  * Usage: node facebook_backfill.mjs <out.json> [weeks=12]
  * Same method as posts_wtd.mjs: count of POST /analytics/posts rows, `until` = end + 1 day (exclusive).
@@ -16,7 +16,11 @@ const addDays = (d, n) => { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x
 const asOf = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
 const curMon = addDays(asOf, -((new Date(asOf + 'T12:00:00Z').getUTCDay() + 6) % 7));
 
-const SPECS = { frank: 'Frank LaRosa', ecp: 'Elite Consulting Partners' };
+const SPECS = {
+  frank: { type: 'FACEBOOKPAGE', name: 'Frank LaRosa' },
+  ecp: { type: 'FACEBOOKPAGE', name: 'Elite Consulting Partners' },
+  instagram: { type: 'INSTAGRAMBUSINESS', name: 'franklarosa.elite' },
+};
 const profiles = await listSocialProfiles();
 const result = { generatedAt: new Date().toISOString(), curMon, weeks: {} };
 
@@ -27,7 +31,7 @@ for (let i = N; i >= 1; i--) {
     const prof = profiles.find(p => p.type === 'FACEBOOKPAGE' && p.socialNetworkUsername === name);
     if (!prof) { result.weeks[mon][key] = { error: `profile "${name}" not found` }; continue; }
     try {
-      const posts = await listPosts(prof.id, mon, addDays(sun, 1), 'FACEBOOKPAGE');
+      const posts = await listPosts(prof.id, mon, addDays(sun, 1), spec.type);
       result.weeks[mon][key] = posts.length;
     } catch (e) {
       result.weeks[mon][key] = { error: String(e.message).slice(0, 200) };
