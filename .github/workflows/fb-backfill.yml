@@ -1,0 +1,62 @@
+name: Facebook post-count backfill (one-off, manual)
+
+# One-off: counts Facebook posts per week for the last N weeks (Frank + ECP Pages) to set the
+# Posting Volume dashboard's Facebook baseline. Manual trigger only. Writes an artifact; does not
+# touch any repo. Uses the same single-use Hootsuite token chain as the other Hootsuite jobs, so it
+# shares their concurrency group and saves the rotated token back at the end.
+on:
+  workflow_dispatch:
+    inputs:
+      weeks:
+        description: 'How many complete weeks back'
+        default: '12'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-hootsuite
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Hootsuite state file path
+        run: echo "HOOTSUITE_STATE_FILE=$RUNNER_TEMP/hootsuite_state.json" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: cloud-hootsuite
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Count Facebook posts per week
+        working-directory: cloud-hootsuite
+        env:
+          HOOTSUITE_CLIENT_ID: ${{ secrets.HOOTSUITE_CLIENT_ID }}
+          HOOTSUITE_CLIENT_SECRET: ${{ secrets.HOOTSUITE_CLIENT_SECRET }}
+          HOOTSUITE_REFRESH_TOKEN: ${{ secrets.HOOTSUITE_REFRESH_TOKEN }}
+        run: node facebook_backfill.mjs "$GITHUB_WORKSPACE/fb_backfill.json" "${{ inputs.weeks }}"
+
+      - name: Save rotated Hootsuite refresh token back to the secret
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -f "$HOOTSUITE_STATE_FILE" ]; then
+            node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOOTSUITE_STATE_FILE,'utf8')).refreshToken)" \
+              | gh secret set HOOTSUITE_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY"
+            echo "Refresh token saved."
+          else
+            echo "No token rotation happened this run; nothing to save."
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fb-backfill
+          path: fb_backfill.json
