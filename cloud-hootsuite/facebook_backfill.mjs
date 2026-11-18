@@ -27,8 +27,9 @@ const result = { generatedAt: new Date().toISOString(), curMon, weeks: {} };
 for (let i = N; i >= 1; i--) {
   const mon = addDays(curMon, -7 * i), sun = addDays(mon, 6);
   result.weeks[mon] = {};
-  for (const [key, name] of Object.entries(SPECS)) {
-    const prof = profiles.find(p => p.type === 'FACEBOOKPAGE' && p.socialNetworkUsername === name);
+  for (const [key, spec] of Object.entries(SPECS)) {
+    const name = spec.name;
+    const prof = profiles.find(p => p.type === spec.type && p.socialNetworkUsername === name);
     if (!prof) { result.weeks[mon][key] = { error: `profile "${name}" not found` }; continue; }
     try {
       const posts = await listPosts(prof.id, mon, addDays(sun, 1), spec.type);
