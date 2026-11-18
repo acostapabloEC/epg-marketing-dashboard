@@ -1,0 +1,62 @@
+name: List Hootsuite profiles + test post counts (one-off, manual)
+
+# One-off: lists the connected Hootsuite profiles (type + handle only) and counts their posts for the
+# last N weeks, to see which accounts the API can actually pull. Manual trigger only; no repo writes.
+# Shares the single-use Hootsuite token chain, so same concurrency group + token save-back.
+# shares their concurrency group and saves the rotated token back at the end.
+on:
+  workflow_dispatch:
+    inputs:
+      weeks:
+        description: 'How many complete weeks back'
+        default: '4'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-hootsuite
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Hootsuite state file path
+        run: echo "HOOTSUITE_STATE_FILE=$RUNNER_TEMP/hootsuite_state.json" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: cloud-hootsuite
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: List profiles and count posts
+        working-directory: cloud-hootsuite
+        env:
+          HOOTSUITE_CLIENT_ID: ${{ secrets.HOOTSUITE_CLIENT_ID }}
+          HOOTSUITE_CLIENT_SECRET: ${{ secrets.HOOTSUITE_CLIENT_SECRET }}
+          HOOTSUITE_REFRESH_TOKEN: ${{ secrets.HOOTSUITE_REFRESH_TOKEN }}
+        run: node list_profiles.mjs "$GITHUB_WORKSPACE/hs_profiles.json" "${{ inputs.weeks }}"
+
+      - name: Save rotated Hootsuite refresh token back to the secret
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -f "$HOOTSUITE_STATE_FILE" ]; then
+            node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOOTSUITE_STATE_FILE,'utf8')).refreshToken)" \
+              | gh secret set HOOTSUITE_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY"
+            echo "Refresh token saved."
+          else
+            echo "No token rotation happened this run; nothing to save."
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hs-profiles
+          path: hs_profiles.json
