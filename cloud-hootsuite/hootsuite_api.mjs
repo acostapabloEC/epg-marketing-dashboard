@@ -114,3 +114,8 @@ export async function listPosts(profileId, since, until, networkId = 'INSTAGRAMB
   } while (cursor);
   return results;
 }
+
+// Generic read-only GET for diagnostics (diag_access.mjs).
+export async function apiGet(pathAndQuery) {
+  return apiCall(pathAndQuery);
+}
